@@ -1,0 +1,8 @@
+*.bak
+*.log
+.agents/
+tests/
+inspect_test.py
+test_events.js
+TEST_INFRA.md
+TEST_READY.md
