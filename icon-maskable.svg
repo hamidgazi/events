@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#0d1117"/>
+  <g transform="translate(38, 38) scale(0.85)">
+    <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161b22"/>
+      <stop offset="50%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#090d13"/>
+    </linearGradient>
+
+    <!-- Calendar Header Gradient -->
+    <linearGradient id="hdrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+
+    <!-- Urgent Pulse Badge Gradient -->
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4444"/>
+      <stop offset="100%" stop-color="#ff8c00"/>
+    </linearGradient>
+
+    <!-- Subtle Glass Glow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#3b82f6" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="badgeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#ff4444" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- App Background (Squircle) -->
+  <rect x="16" y="16" width="480" height="480" rx="110" fill="url(#bgGrad)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="6"/>
+
+  <!-- Calendar Base Container with Glow -->
+  <g filter="url(#glow)">
+    <!-- Calendar Body -->
+    <rect x="88" y="112" width="336" height="316" rx="36" fill="#1c2128" stroke="rgba(255, 255, 255, 0.1)" stroke-width="4"/>
+
+    <!-- Calendar Header Bar -->
+    <path d="M 88 148 C 88 128 104 112 124 112 L 388 112 C 408 112 424 128 424 148 L 424 196 L 88 196 Z" fill="url(#hdrGrad)"/>
+  </g>
+
+  <!-- Metallic Binder Rings -->
+  <rect x="156" y="80" width="28" height="64" rx="14" fill="#e6edf3" stroke="#0d1117" stroke-width="5"/>
+  <rect x="328" y="80" width="28" height="64" rx="14" fill="#e6edf3" stroke="#0d1117" stroke-width="5"/>
+
+  <!-- Calendar Day Number -->
+  <text x="256" y="324" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="124" font-weight="900" fill="#f0f6fc" text-anchor="middle" letter-spacing="-2">24</text>
+
+  <!-- Subtitle Badge: "DAYS LEFT" -->
+  <rect x="160" y="356" width="192" height="38" rx="19" fill="rgba(56, 139, 253, 0.18)" stroke="rgba(56, 139, 253, 0.4)" stroke-width="2"/>
+  <text x="256" y="381" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="800" fill="#58a6ff" text-anchor="middle" letter-spacing="3">DAYS LEFT</text>
+
+  <!-- Urgency Countdown Clock Badge (Top Right) -->
+  <g filter="url(#badgeGlow)">
+    <circle cx="396" cy="116" r="48" fill="url(#badgeGrad)" stroke="#0d1117" stroke-width="7"/>
+    <!-- Clock Hands inside Badge -->
+    <circle cx="396" cy="116" r="3" fill="#ffffff"/>
+    <line x1="396" y1="116" x2="396" y2="88" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <line x1="396" y1="116" x2="416" y2="124" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  </g>
+</svg>
