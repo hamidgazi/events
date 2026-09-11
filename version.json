@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Events Countdown",
   "updated": "2026-09-11",
-  "changelog": "Release v1.0.0: Mobile Events Countdown with live countdown, swipe-to-delete, JSON import/export, General category, and offline PWA auto-update."
+  "changelog": "Release v1.0.1: Added custom high-resolution Event Countdown calendar app icons (SVG and 512x512 / 192x192 PNGs)."
 }
