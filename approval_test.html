@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔒 Approval System Demo — Events</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: rgba(22, 27, 34, 0.85);
+      --border: rgba(240, 246, 252, 0.12);
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88, 166, 255, 0.35);
+      --success: #3dd68c;
+      --danger: #ff4444;
+      --warning: #e8b030;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(88, 166, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 85%, rgba(61, 214, 140, 0.06) 0%, transparent 45%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Top Mode Banner */
+    .test-banner {
+      background: rgba(232, 176, 48, 0.12);
+      border: 1px solid rgba(232, 176, 48, 0.3);
+      color: #ffd470;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .test-banner button {
+      background: #e8b030;
+      border: none;
+      color: #000;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* Main Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .icon-badge {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      background: rgba(88, 166, 255, 0.12);
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 12px;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .icon-badge.waiting {
+      background: rgba(232, 176, 48, 0.12);
+      border-color: rgba(232, 176, 48, 0.4);
+      box-shadow: 0 0 20px rgba(232, 176, 48, 0.3);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .icon-badge.unlocked {
+      background: rgba(61, 214, 140, 0.12);
+      border-color: rgba(61, 214, 140, 0.4);
+      box-shadow: 0 0 20px rgba(61, 214, 140, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(13, 17, 23, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      padding: 12px 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .device-info-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #1f6feb, #388bfd);
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(31, 111, 235, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.97);
+    }
+
+    /* Status Screen */
+    .status-box {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin: 16px 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background: var(--warning);
+      animation: dotPulse 1.4s infinite ease-in-out both;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes dotPulse {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Protected Content Area */
+    #content-unlocked {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(61, 214, 140, 0.15);
+      border: 1px solid rgba(61, 214, 140, 0.3);
+      color: var(--success);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .sample-event-card {
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 4px solid #ff4444;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+
+    /* Owner Admin Simulation Drawer — HIDDEN BY DEFAULT */
+    .admin-panel {
+      width: 100%;
+      max-width: 440px;
+      background: #161b22;
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 16px;
+      display: none; /* Completely hidden from regular visitors */
+      animation: fadeIn 0.3s ease;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .owner-link-bar {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .btn-owner-toggle {
+      background: transparent;
+      border: none;
+      color: #6e7681;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .btn-owner-toggle:hover {
+      color: #8b949e;
+    }
+
+    /* Owner PIN Modal */
+    .pin-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .pin-modal-backdrop.open {
+      display: flex;
+    }
+
+    .pin-box {
+      width: 100%;
+      max-width: 320px;
+      background: #161b22;
+      border: 1px solid rgba(240, 246, 252, 0.15);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #58a6ff;
+      margin-bottom: 12px;
+    }
+
+    .request-item {
+      background: rgba(13, 17, 23, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .req-info {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .req-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .req-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-approve {
+      flex: 1;
+      background: #238636;
+      border: none;
+      color: #fff;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-deny {
+      flex: 1;
+      background: rgba(255, 68, 68, 0.15);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      color: #ff5555;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Test Notice & Instructions -->
+    <div class="test-banner">
+      <span>💡 <b>Simulate on your phone/PC:</b> Open this file in 2 tabs to see live approval in action!</span>
+    </div>
+
+    <!-- STATE 1: REQUEST ACCESS FORM -->
+    <div class="card" id="card-request">
+      <div class="card-header">
+        <div class="icon-badge">🔒</div>
+        <h2>Access Restricted</h2>
+        <p class="subtitle">This document is private. Without owner permission, access is completely blocked.</p>
+      </div>
+
+      <form id="access-form">
+        <div class="form-group">
+          <label>Your Full Name *</label>
+          <input type="text" id="user-name" placeholder="e.g. John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email or Phone *</label>
+          <input type="text" id="user-contact" placeholder="e.g. john@company.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Reason for Access</label>
+          <textarea id="user-reason" rows="2" placeholder="e.g. Need to review project schedule"></textarea>
+        </div>
+
+        <div class="device-info-pill">
+          <span>📱</span>
+          <span id="device-info">Detecting device...</span>
+        </div>
+
+        <button type="submit" class="btn-submit">Request Permission 📨</button>
+      </form>
+    </div>
+
+    <!-- STATE 2: WAITING FOR OWNER APPROVAL -->
+    <div class="card" id="card-waiting" style="display: none;">
+      <div class="card-header">
+        <div class="icon-badge waiting">⏳</div>
+        <h2>Request Sent to Owner</h2>
+        <p class="subtitle">Waiting for owner approval. This page checks every 2 seconds and will automatically unlock once approved!</p>
+      </div>
+
+      <div class="status-box">
+        <div class="progress-dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <p style="font-size: 13px; color: var(--warning); font-weight: 600;" id="poll-status">
+          Listening for approval...
+        </p>
+        <button class="btn-logout" id="btn-cancel-req" style="margin-top: 20px;">Cancel Request</button>
+      </div>
+    </div>
+
+    <!-- STATE 3: UNLOCKED CONTENT (Protected Events App) -->
+    <div class="card" id="content-unlocked">
+      <div class="card-header" style="margin-bottom: 12px;">
+        <div class="icon-badge unlocked">✅</div>
+        <h2>Permission Granted</h2>
+        <div class="user-pill" id="approved-user-badge">👤 Approved Access</div>
+      </div>
+
+      <!-- Sample Protected Events UI -->
+      <h3 style="font-size: 15px; margin-bottom: 10px; color: #58a6ff;">📅 Protected Schedule</h3>
+      
+      <div class="sample-event-card">
+        <div>
+          <div style="font-weight: 700; font-size: 15px;">Project Launch Review</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Tomorrow • 10:00 AM</div>
+        </div>
+        <span style="background: rgba(255, 68, 68, 0.2); color: #ff5555; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;">1 day left</span>
+      </div>
+
+      <div class="sample-event-card" style="border-left-color: #ff8c00;">
+        <div>
+          <div style="font-weight: 700; font-size: 15px;">Financial Audit Meeting</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Sep 15 • Confidential</div>
+        </div>
+        <span style="background: rgba(255, 140, 0, 0.2); color: #ff8c00; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;">4 days left</span>
+      </div>
+
+      <button class="btn-logout" id="btn-lock">🔒 Lock Session</button>
+    </div>
+
+    <!-- DISCREET OWNER PORTAL LINK (For file owner only) -->
+    <div class="owner-link-bar">
+      <button type="button" class="btn-owner-toggle" id="btn-open-owner-login">👑 Owner Portal (Protected by PIN)</button>
+    </div>
+
+    <!-- OWNER CONTROL PANEL (Only visible after Owner PIN is entered) -->
+    <div class="admin-panel" id="admin-panel">
+      <div class="admin-header">
+        <span>👑 Owner Dashboard (Unlocked with PIN)</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span id="active-req-count" style="background: rgba(88, 166, 255, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 11px;">0 Pending</span>
+          <button type="button" id="btn-close-owner" style="background: none; border: none; color: #8b949e; cursor: pointer; font-size: 14px;">✕</button>
+        </div>
+      </div>
+      <div id="requests-list">
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 12px;">
+          No pending access requests.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OWNER PIN MODAL -->
+  <div class="pin-modal-backdrop" id="pin-modal">
+    <div class="pin-box">
+      <div style="font-size: 32px; margin-bottom: 8px;">🔐</div>
+      <h3 style="font-size: 17px; margin-bottom: 6px;">Owner Verification</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Only the file owner can approve requests.<br><b>Default PIN: 1234</b>
+      </p>
+      <form id="pin-form">
+        <input type="password" id="owner-pin-input" placeholder="Enter Owner PIN" maxlength="10" style="text-align: center; letter-spacing: 4px; font-size: 18px; margin-bottom: 14px;" required>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btn-cancel-pin" class="btn-logout" style="margin: 0; flex: 1;">Cancel</button>
+          <button type="submit" class="btn-submit" style="padding: 10px; flex: 1; font-size: 14px;">Unlock 🔓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // System Keys & Channel
+    const DB_KEY_REQUESTS = 'approval_demo_requests';
+    const DB_KEY_APPROVED = 'approval_demo_approved';
+    const channel = new BroadcastChannel('approval_channel');
+
+    // Detect Device Info
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const platform = navigator.platform || 'Unknown';
+    document.getElementById('device-info').textContent = 
+      (isMobile ? '📱 Mobile' : '💻 Desktop') + ' • ' + (navigator.userAgentData?.platform || platform);
+
+    // Load initial State
+    let currentRequestId = localStorage.getItem('my_request_id');
+    checkApprovalStatus();
+
+    // 1. Submit Request
+    document.getElementById('access-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('user-name').value.trim();
+      const contact = document.getElementById('user-contact').value.trim();
+      const reason = document.getElementById('user-reason').value.trim();
+
+      const reqId = 'REQ_' + Math.random().toString(36).substr(2, 9);
+      const newRequest = {
+        id: reqId,
+        name: name,
+        contact: contact,
+        reason: reason,
+        device: isMobile ? 'Mobile Phone' : 'Desktop PC',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: 'pending' // pending | approved | denied
+      };
+
+      // Save to requests queue
+      const requests = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      requests.push(newRequest);
+      localStorage.setItem(DB_KEY_REQUESTS, JSON.stringify(requests));
+
+      // Save user session
+      currentRequestId = reqId;
+      localStorage.setItem('my_request_id', reqId);
+      localStorage.setItem('my_user_name', name);
+
+      // Broadcast to owner
+      channel.postMessage({ type: 'NEW_REQUEST', data: newRequest });
+
+      renderUI();
+      renderAdminPanel();
+    });
+
+    // 2. Poll & Listen for Owner's Approval
+    channel.onmessage = (event) => {
+      if (event.data?.type === 'STATUS_UPDATE' || event.data?.type === 'NEW_REQUEST') {
+        checkApprovalStatus();
+        renderAdminPanel();
+      }
+    };
+
+    // Auto-poll every 1.5s for instant sync
+    setInterval(checkApprovalStatus, 1500);
+
+    function checkApprovalStatus() {
+      if (!currentRequestId) {
+        renderUI('request');
+        renderAdminPanel();
+        return;
+      }
+
+      const requests = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      const myReq = requests.find(r => r.id === currentRequestId);
+
+      if (!myReq || myReq.status === 'denied') {
+        if (myReq?.status === 'denied') {
+          alert('❌ Your request was denied by the owner.');
+          localStorage.removeItem('my_request_id');
+          currentRequestId = null;
+        }
+        renderUI('request');
+      } else if (myReq.status === 'approved') {
+        renderUI('unlocked');
+      } else {
+        renderUI('waiting');
+      }
+
+      renderAdminPanel();
+    }
+
+    function renderUI(state) {
+      document.getElementById('card-request').style.display = (state === 'request') ? 'block' : 'none';
+      document.getElementById('card-waiting').style.display = (state === 'waiting') ? 'block' : 'none';
+      document.getElementById('content-unlocked').style.display = (state === 'unlocked') ? 'block' : 'none';
+
+      if (state === 'unlocked') {
+        const name = localStorage.getItem('my_user_name') || 'Guest';
+        document.getElementById('approved-user-badge').textContent = `👤 Approved: ${name}`;
+      }
+    }
+
+    // 3. Owner Actions: Approve / Deny
+    function approveRequest(reqId) {
+      updateRequestStatus(reqId, 'approved');
+    }
+
+    function denyRequest(reqId) {
+      updateRequestStatus(reqId, 'denied');
+    }
+
+    function updateRequestStatus(reqId, status) {
+      const requests = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      const idx = requests.findIndex(r => r.id === reqId);
+      if (idx !== -1) {
+        requests[idx].status = status;
+        localStorage.setItem(DB_KEY_REQUESTS, JSON.stringify(requests));
+        channel.postMessage({ type: 'STATUS_UPDATE', reqId, status });
+        checkApprovalStatus();
+        renderAdminPanel();
+      }
+    }
+
+    // Cancel Request
+    document.getElementById('btn-cancel-req').addEventListener('click', () => {
+      const requests = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      const filtered = requests.filter(r => r.id !== currentRequestId);
+      localStorage.setItem(DB_KEY_REQUESTS, JSON.stringify(filtered));
+      localStorage.removeItem('my_request_id');
+      currentRequestId = null;
+      renderUI('request');
+      renderAdminPanel();
+    });
+
+    // Lock / Logout
+    document.getElementById('btn-lock').addEventListener('click', () => {
+      localStorage.removeItem('my_request_id');
+      currentRequestId = null;
+      renderUI('request');
+    });
+
+    // Render Admin List
+    function renderAdminPanel() {
+      const requests = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      const list = document.getElementById('requests-list');
+      const count = document.getElementById('active-req-count');
+
+      const pending = requests.filter(r => r.status === 'pending');
+      count.textContent = `${pending.length} Pending`;
+
+      if (requests.length === 0) {
+        list.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 12px;">No requests yet. Fill the form above to test!</p>`;
+        return;
+      }
+
+      list.innerHTML = requests.map(req => `
+        <div class="request-item">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div class="req-info">${escapeHTML(req.name)} <span style="font-weight: 400; color: #8b949e;">(${escapeHTML(req.contact)})</span></div>
+            <span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; ${
+              req.status === 'approved' ? 'color: #3dd68c; background: rgba(61, 214, 140, 0.15);' :
+              req.status === 'denied' ? 'color: #ff5555; background: rgba(255, 68, 68, 0.15);' :
+              'color: #ffd470; background: rgba(232, 176, 48, 0.15);'
+            }">${req.status.toUpperCase()}</span>
+          </div>
+          <div class="req-meta">${req.device} • ${req.time} ${req.reason ? '• Note: "' + escapeHTML(req.reason) + '"' : ''}</div>
+          
+          ${req.status === 'pending' ? `
+            <div class="req-actions">
+              <button class="btn-approve" onclick="approveRequest('${req.id}')">✅ Grant Access</button>
+              <button class="btn-deny" onclick="denyRequest('${req.id}')">❌ Deny</button>
+            </div>
+          ` : `
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-deny" style="flex: 1; padding: 4px;" onclick="denyRequest('${req.id}')">Revoke Access</button>
+            </div>
+          `}
+        </div>
+      `).join('');
+    }
+
+    function escapeHTML(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ==========================================
+    // OWNER AUTHENTICATION & PIN PROTECTION
+    // ==========================================
+    const OWNER_PIN = '1234'; // You can change this to any PIN you want
+    let isOwnerLoggedIn = false;
+
+    const pinModal = document.getElementById('pin-modal');
+    const pinInput = document.getElementById('owner-pin-input');
+    const adminPanel = document.getElementById('admin-panel');
+
+    // Open PIN prompt
+    document.getElementById('btn-open-owner-login').addEventListener('click', () => {
+      pinModal.classList.add('open');
+      pinInput.value = '';
+      setTimeout(() => pinInput.focus(), 100);
+    });
+
+    // Close PIN prompt
+    document.getElementById('btn-cancel-pin').addEventListener('click', () => {
+      pinModal.classList.remove('open');
+    });
+
+    // Verify PIN submission
+    document.getElementById('pin-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const entered = pinInput.value.trim();
+      if (entered === OWNER_PIN) {
+        isOwnerLoggedIn = true;
+        pinModal.classList.remove('open');
+        adminPanel.classList.add('active');
+        renderAdminPanel();
+        alert('🔓 Owner Authenticated! Dashboard is now visible at the bottom.');
+      } else {
+        alert('❌ Invalid Owner PIN! Access denied.');
+        pinInput.value = '';
+        pinInput.focus();
+      }
+    });
+
+    // Close Owner Dashboard
+    document.getElementById('btn-close-owner').addEventListener('click', () => {
+      isOwnerLoggedIn = false;
+      adminPanel.classList.remove('active');
+    });
+
+    // Owner Secret Keyboard Shortcut: Ctrl + Shift + A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        document.getElementById('btn-open-owner-login').click();
+      }
+    });
+
+    // Initial render
+    renderAdminPanel();
+  </script>
+</body>
+</html>

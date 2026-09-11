@@ -62,6 +62,11 @@
             min-height: 100vh;
             padding-bottom: 110px;
             overflow-x: hidden;
+            overscroll-behavior-y: contain;
+        }
+
+        main {
+            contain: layout style;
         }
 
         button { font-family: inherit; cursor: pointer; }
@@ -144,6 +149,85 @@
             font-size: 12.5px;
             color: var(--text-3);
             letter-spacing: .1px;
+        }
+
+        /* Search Bar */
+        .search-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .search-input-box {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-ico {
+            position: absolute;
+            left: 11px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        #search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 7px 32px 7px 32px;
+            color: var(--text-1);
+            font-size: 13px;
+            outline: none;
+            transition: all .2s ease;
+        }
+
+        #search-input:focus {
+            background: rgba(255, 255, 255, 0.10);
+            border-color: rgba(74, 158, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
+        }
+
+        #search-input::placeholder {
+            color: var(--text-3);
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.14);
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-2);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 0;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .search-clear-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            color: #fff;
+        }
+
+        .search-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--c-low);
+            background: rgba(74, 158, 255, 0.12);
+            border: 1px solid rgba(74, 158, 255, 0.25);
+            padding: 4px 9px;
+            border-radius: 12px;
+            white-space: nowrap;
         }
 
         @media (max-width: 420px) {
@@ -422,19 +506,25 @@
         }
         .card.open .card-actions { display: flex; }
 
-        .btn-edit, .btn-del {
+        .btn-share, .btn-edit, .btn-del {
             flex: 1;
             padding: 10px;
             border-radius: var(--radius-sm);
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 700;
             border: 1px solid;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: background .2s;
+            transition: background .2s, transform .1s;
         }
+        .btn-share {
+            background: rgba(61,214,140,.12);
+            color: #3dd68c;
+            border-color: rgba(61,214,140,.28);
+        }
+        .btn-share:hover { background: rgba(61,214,140,.22); }
         .btn-edit {
             background: rgba(74,158,255,.12);
             color: #4a9eff;
@@ -591,6 +681,43 @@
         }
         .fg textarea { resize: none; height: 82px; line-height: 1.5; }
         .fg select option { background: #161b22; }
+
+        .quick-chips-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 9px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .quick-chips-row::-webkit-scrollbar { display: none; }
+
+        .q-chip {
+            flex: 1;
+            min-width: fit-content;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .q-chip:hover {
+            background: rgba(74, 158, 255, 0.15);
+            border-color: rgba(74, 158, 255, 0.4);
+            color: #fff;
+        }
+        .q-chip.active {
+            background: rgba(74, 158, 255, 0.22);
+            border-color: var(--c-low);
+            color: #fff;
+        }
 
         .form-btns {
             display: flex;
@@ -861,6 +988,12 @@
     <div class="hdr-row">
         <h1>📅 Events</h1>
         <div class="hdr-actions">
+            <button class="hdr-btn" id="btn-sound-toggle" title="Toggle Sound Effects" aria-label="Toggle Sound">
+                <span id="sound-icon">🔊</span><span class="hdr-btn-lbl">Sound</span>
+            </button>
+            <button class="hdr-btn" id="btn-share-app" title="Share Events App" aria-label="Share App">
+                <span>↗️</span><span class="hdr-btn-lbl">Share</span>
+            </button>
             <button class="hdr-btn" id="btn-export" title="Export Backup JSON" aria-label="Export Backup">
                 <span>📤</span><span class="hdr-btn-lbl">Export</span>
             </button>
@@ -872,6 +1005,16 @@
         </div>
     </div>
     <div class="hdr-date" id="hdr-date"></div>
+
+    <!-- Real-time Live Search Bar -->
+    <div class="search-bar-wrap">
+        <div class="search-input-box">
+            <span class="search-ico">🔍</span>
+            <input type="search" id="search-input" placeholder="Search events, notes, tags…" autocomplete="off" spellcheck="false">
+            <button type="button" id="search-clear" class="search-clear-btn" title="Clear search" aria-label="Clear search" style="display:none">✕</button>
+        </div>
+        <span id="search-badge" class="search-badge" style="display:none">0 found</span>
+    </div>
 </header>
 
 <!-- ===== FILTER BAR ===== -->
@@ -903,7 +1046,7 @@
 <!-- ===== FOOTER (VERSION & UPDATE STATUS) ===== -->
 <footer class="app-footer">
     <div class="footer-version-row">
-        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.0.1</span></span>
+        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.1.0</span></span>
         <button type="button" id="btn-manual-update-check" class="btn-check-update">🔄 Check for Updates</button>
     </div>
     <div class="footer-status-text" id="footer-status-text">App is up to date</div>
@@ -929,7 +1072,17 @@
         </div>
 
         <div class="fg">
-            <label for="f-date">Date <span style="color:var(--c-today)">*</span></label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <label for="f-date" style="margin-bottom:0;">Date <span style="color:var(--c-today)">*</span></label>
+                <span style="font-size:11px; color:var(--text-3);">Quick Presets</span>
+            </div>
+            <div class="quick-chips-row" id="quick-date-presets">
+                <button type="button" class="q-chip" data-days="0" onclick="setQuickDate(0)">Today</button>
+                <button type="button" class="q-chip" data-days="1" onclick="setQuickDate(1)">Tomorrow</button>
+                <button type="button" class="q-chip" data-days="3" onclick="setQuickDate(3)">+3 Days</button>
+                <button type="button" class="q-chip" data-days="7" onclick="setQuickDate(7)">Next Week</button>
+                <button type="button" class="q-chip" data-days="30" onclick="setQuickDate(30)">+1 Mo</button>
+            </div>
             <input id="f-date" type="date" required>
         </div>
 
@@ -1034,11 +1187,17 @@ const CATS = {
     other:    { icon: '📌', label: 'Other'    },
 };
 
+function formatLocalDate(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return yyyy + '-' + mm + '-' + dd;
+}
+
 function relDate(daysFromNow) {
     const d = new Date();
-    d.setHours(0,0,0,0);
     d.setDate(d.getDate() + daysFromNow);
-    return d.toISOString().slice(0,10);
+    return formatLocalDate(d);
 }
 
 const SAMPLES = [
@@ -1055,10 +1214,225 @@ const SAMPLES = [
 ===================================================== */
 let events = [];
 let activeFilter = 'all';
+let searchQuery = '';
 let pendingDelId = null;
 let pendingImportEvents = null;
 let liveTimer = null;
 let toastTimer = null;
+
+/* =====================================================
+   SOUND EFFECTS ENGINE (Web Audio API Synthesizer)
+===================================================== */
+const SoundFX = {
+    audioCtx: null,
+    enabled: (function() {
+        try {
+            const saved = localStorage.getItem('events_sound_enabled');
+            return saved === null ? true : saved === 'true';
+        } catch (_) {
+            return true;
+        }
+    })(),
+
+    init() {
+        if (typeof window === 'undefined') return;
+        if (!this.audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+            const AudioClass = window.AudioContext || window.webkitAudioContext;
+            this.audioCtx = new AudioClass();
+        }
+        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume().catch(() => {});
+        }
+    },
+
+    toggle() {
+        this.enabled = !this.enabled;
+        try {
+            localStorage.setItem('events_sound_enabled', this.enabled ? 'true' : 'false');
+        } catch (_) {}
+        this.updateUI();
+        if (this.enabled) {
+            this.playPop();
+            showToast('Sound effects enabled 🔊');
+        } else {
+            showToast('Sound effects muted 🔇');
+        }
+    },
+
+    updateUI() {
+        const icon = document.getElementById('sound-icon');
+        const btn  = document.getElementById('btn-sound-toggle');
+        if (icon) icon.textContent = this.enabled ? '🔊' : '🔇';
+        if (btn) btn.title = this.enabled ? 'Sound Effects: On' : 'Sound Effects: Muted';
+    },
+
+    playPop() {
+        if (!this.enabled) return;
+        try {
+            this.init();
+            if (!this.audioCtx) return;
+            const now = this.audioCtx.currentTime;
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(520, now);
+            osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+
+            osc.connect(gain);
+            gain.connect(this.audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.07);
+        } catch (_) {}
+    },
+
+    playWhoosh() {
+        if (!this.enabled) return;
+        try {
+            this.init();
+            if (!this.audioCtx) return;
+            const now = this.audioCtx.currentTime;
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(360, now);
+            osc.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.exponentialRampToValueAtTime(0.15, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+            osc.connect(gain);
+            gain.connect(this.audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        } catch (_) {}
+    },
+
+    playCelebrate() {
+        if (!this.enabled) return;
+        try {
+            this.init();
+            if (!this.audioCtx) return;
+            const now = this.audioCtx.currentTime;
+            const chords = [
+                { f: 523.25, start: 0.00, dur: 0.12 },
+                { f: 659.25, start: 0.08, dur: 0.14 },
+                { f: 783.99, start: 0.16, dur: 0.20 },
+                { f: 1046.50, start: 0.24, dur: 0.35 }
+            ];
+            chords.forEach(n => {
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(n.f, now + n.start);
+
+                gain.gain.setValueAtTime(0.001, now + n.start);
+                gain.gain.exponentialRampToValueAtTime(0.18, now + n.start + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+
+                osc.connect(gain);
+                gain.connect(this.audioCtx.destination);
+                osc.start(now + n.start);
+                osc.stop(now + n.start + n.dur + 0.02);
+            });
+        } catch (_) {}
+    }
+};
+
+/* =====================================================
+   CONFETTI CELEBRATION ENGINE (60 FPS Canvas)
+===================================================== */
+const CanvasConfetti = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    animationId: null,
+
+    init() {
+        if (typeof document === 'undefined') return;
+        if (!this.canvas) {
+            this.canvas = document.getElementById('confetti-canvas');
+            if (this.canvas && typeof this.canvas.getContext === 'function') {
+                this.ctx = this.canvas.getContext('2d');
+            }
+        }
+    },
+
+    burst() {
+        this.init();
+        if (!this.canvas || !this.ctx || typeof window === 'undefined') return;
+
+        this.canvas.width = window.innerWidth || 800;
+        this.canvas.height = window.innerHeight || 600;
+        this.canvas.style.display = 'block';
+
+        const colors = ['#ff4444', '#ff8c00', '#e8b030', '#4a9eff', '#3dd68c', '#a371f7', '#ffffff'];
+        this.particles = [];
+        const count = 45;
+
+        for (let i = 0; i < count; i++) {
+            this.particles.push({
+                x: this.canvas.width * (0.3 + Math.random() * 0.4),
+                y: this.canvas.height * 0.35,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.8) * 9 - 2,
+                size: Math.random() * 7 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 10,
+                opacity: 1
+            });
+        }
+
+        if (this.animationId && typeof cancelAnimationFrame === 'function') {
+            cancelAnimationFrame(this.animationId);
+        }
+        const startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+
+        const animate = (now) => {
+            const elapsed = now - startTime;
+            if (elapsed > 1800) {
+                this.canvas.style.display = 'none';
+                if (this.ctx && this.ctx.clearRect) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+                this.animationId = null;
+                return;
+            }
+
+            if (this.ctx && this.ctx.clearRect) {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.22;
+                    p.rotation += p.rotSpeed;
+                    p.opacity = Math.max(0, 1 - (elapsed / 1800));
+
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate((p.rotation * Math.PI) / 180);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.opacity;
+                    this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+                    this.ctx.restore();
+                });
+            }
+
+            if (typeof requestAnimationFrame === 'function') {
+                this.animationId = requestAnimationFrame(animate);
+            }
+        };
+
+        if (typeof requestAnimationFrame === 'function') {
+            this.animationId = requestAnimationFrame(animate);
+        }
+    }
+};
 
 /* =====================================================
    HELPERS
@@ -1186,6 +1560,17 @@ function sortedFiltered() {
         ? [...events]
         : events.filter(e => (e.category || 'general') === activeFilter);
 
+    if (searchQuery && searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        evts = evts.filter(e => {
+            const name = (e.name || '').toLowerCase();
+            const notes = (e.notes || '').toLowerCase();
+            const catObj = CATS[e.category] || CATS.general;
+            const catLabel = (catObj.label || '').toLowerCase();
+            return name.includes(q) || notes.includes(q) || catLabel.includes(q);
+        });
+    }
+
     return evts.sort((a, b) => {
         const da = daysLeft(a.date), db = daysLeft(b.date);
         if (da >= 0 && db >= 0) return da - db || a.name.localeCompare(b.name);
@@ -1223,6 +1608,7 @@ function cardHtml(evt, archived) {
     const pg  = progress(evt.date);
     const pgLabel = archived ? '100% elapsed' : pg + '% to event';
     const badge = archived ? Math.abs(d)+'d ago' : badgeText(evt);
+    const celebrateAttr = (!archived && d === 0) ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
     const notes = evt.notes
         ? '<div class="card-notes">📝 ' + esc(evt.notes) + '</div>'
         : '';
@@ -1238,7 +1624,7 @@ function cardHtml(evt, archived) {
         + '<div class="card-inner">'
         +   '<div class="card-top">'
         +     '<div class="cat-tag"><span class="cat-icon">' + cat.icon + '</span><span>' + cat.label + '</span></div>'
-        +     '<div class="days-badge" id="badge-' + evt.id + '">' + badge + '</div>'
+        +     '<div class="days-badge" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badge + '</div>'
         +   '</div>'
         +   '<div class="card-name">' + esc(evt.name) + '</div>'
         +   '<div class="card-date">📅 ' + fmtDate(evt.date) + '</div>'
@@ -1249,6 +1635,7 @@ function cardHtml(evt, archived) {
         +   '</div>'
         + '</div>'
         + '<div class="card-actions">'
+        +   '<button class="btn-share" onclick="doShareEvent(\'' + evt.id + '\',event)">↗️ Share</button>'
         +   '<button class="btn-edit" onclick="doEdit(\'' + evt.id + '\',event)">✏️ Edit</button>'
         +   '<button class="btn-del"  onclick="doDelPrompt(\'' + evt.id + '\',event)">🗑️ Delete</button>'
         + '</div>'
@@ -1393,6 +1780,7 @@ function executeSwipeDelete(id) {
     events.splice(idx, 1);
     save();
     render();
+    SoundFX.playWhoosh();
 
     showToast('Deleted "' + deleted.name + '"', {
         actionText: 'Undo',
@@ -1400,9 +1788,23 @@ function executeSwipeDelete(id) {
             events.splice(Math.min(idx, events.length), 0, deleted);
             save();
             render();
+            SoundFX.playPop();
             showToast('Restored "' + deleted.name + '"');
         }
     });
+}
+
+/* =====================================================
+   SEARCH HELPER
+===================================================== */
+function clearSearch() {
+    searchQuery = '';
+    const input = document.getElementById('search-input');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    render();
 }
 
 /* =====================================================
@@ -1413,15 +1815,33 @@ function render() {
     const active   = all.filter(e => daysLeft(e.date) >= 0);
     const archived = all.filter(e => daysLeft(e.date) < 0);
 
+    /* Search UI indicators */
+    const searchClear = document.getElementById('search-clear');
+    const searchBadge = document.getElementById('search-badge');
+    if (searchQuery.trim()) {
+        if (searchClear) searchClear.style.display = 'flex';
+        if (searchBadge) {
+            searchBadge.style.display = 'inline-block';
+            searchBadge.textContent = all.length + ' found';
+        }
+    } else {
+        if (searchClear) searchClear.style.display = 'none';
+        if (searchBadge) searchBadge.style.display = 'none';
+    }
+
     /* Active section */
     const aList = document.getElementById('active-list');
     const aHdr  = document.getElementById('active-hdr');
     if (active.length) {
-        aHdr.textContent = 'Upcoming — ' + active.length + ' event' + (active.length !== 1 ? 's' : '');
+        aHdr.textContent = (searchQuery.trim() ? 'Matching Upcoming — ' : 'Upcoming — ') + active.length + ' event' + (active.length !== 1 ? 's' : '');
         aList.innerHTML  = active.map(e => cardHtml(e, false)).join('');
     } else {
         aHdr.textContent = '';
-        aList.innerHTML  = '<div class="empty"><span class="empty-icon">🗓️</span><p>No upcoming events.<br>Tap <strong>+</strong> to add one!</p></div>';
+        if (searchQuery.trim()) {
+            aList.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span><p>No events match "<strong>' + esc(searchQuery) + '</strong>".<br><button type="button" onclick="clearSearch()" class="toast-btn" style="margin-top:12px;padding:6px 14px;border-radius:12px;cursor:pointer;">Clear Search</button></p></div>';
+        } else {
+            aList.innerHTML = '<div class="empty"><span class="empty-icon">🗓️</span><p>No upcoming events.<br>Tap <strong>+</strong> to add one!</p></div>';
+        }
     }
 
     /* Archived section */
@@ -1430,7 +1850,7 @@ function render() {
     const archLbl  = document.getElementById('arch-label');
     if (archived.length) {
         archWrap.style.display = 'block';
-        archLbl.textContent = 'Past Events (' + archived.length + ')';
+        archLbl.textContent = (searchQuery.trim() ? 'Matching Past Events (' : 'Past Events (') + archived.length + ')';
         archList.innerHTML = archived.map(e => cardHtml(e, true)).join('');
     } else {
         archWrap.style.display = 'none';
@@ -1438,7 +1858,8 @@ function render() {
 
     /* Header chip */
     const upCount = events.filter(e => daysLeft(e.date) >= 0).length;
-    document.getElementById('hdr-chip').textContent = upCount + ' upcoming';
+    const hdrChip = document.getElementById('hdr-chip');
+    if (hdrChip) hdrChip.textContent = upCount + ' upcoming';
 
     /* Attach real-time swipe handlers */
     document.querySelectorAll('.card').forEach(attachSwipeHandlers);
@@ -1474,12 +1895,43 @@ function toggleCard(id, e) {
     if (card._justSwiped) return;
     const wasOpen = card.classList.contains('open');
     document.querySelectorAll('.card.open').forEach(function(c) { c.classList.remove('open'); });
-    if (!wasOpen) card.classList.add('open');
+    if (!wasOpen) {
+        card.classList.add('open');
+        SoundFX.playPop();
+        const ev = events.find(function(item) { return item.id === id; });
+        if (ev && daysLeft(ev.date) === 0) {
+            SoundFX.playCelebrate();
+            CanvasConfetti.burst();
+        }
+    }
 }
 
 /* =====================================================
-   MODAL
+   QUICK DATE CHIPS & MODAL
 ===================================================== */
+function highlightActiveQuickChip(days) {
+    if (typeof document === 'undefined') return;
+    document.querySelectorAll('.q-chip').forEach(function(c) {
+        if (parseInt(c.dataset.days, 10) === days) {
+            c.classList.add('active');
+        } else {
+            c.classList.remove('active');
+        }
+    });
+}
+
+function setQuickDate(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    const dateStr = formatLocalDate(d);
+    const input = document.getElementById('f-date');
+    if (input) {
+        input.value = dateStr;
+        highlightActiveQuickChip(days);
+        SoundFX.playPop();
+    }
+}
+
 function openModal(evtId) {
     const modal   = document.getElementById('modal');
     const overlay = document.getElementById('overlay');
@@ -1491,6 +1943,7 @@ function openModal(evtId) {
     document.getElementById('f-date').value  = '';
     document.getElementById('f-cat').value   = 'general'; // Default saving option is 'General'
     document.getElementById('f-notes').value = '';
+    highlightActiveQuickChip(-999);
 
     if (evtId) {
         const ev = events.find(function(e) { return e.id === evtId; });
@@ -1502,10 +1955,14 @@ function openModal(evtId) {
             document.getElementById('f-date').value  = ev.date;
             document.getElementById('f-cat').value   = ev.category || 'general';
             document.getElementById('f-notes').value = ev.notes || '';
+            const d = daysLeft(ev.date);
+            highlightActiveQuickChip(d);
         }
     } else {
         title.textContent   = '✨ New Event';
         saveLbl.textContent = 'Save Event';
+        // Default quick date to Today
+        setQuickDate(0);
     }
 
     overlay.classList.add('on');
@@ -1770,13 +2227,153 @@ document.getElementById('hdr-date').textContent = new Date().toLocaleDateString(
     weekday:'long', day:'numeric', month:'long', year:'numeric'
 });
 
+/* =====================================================
+   WEB SHARE API & CELEBRATION
+===================================================== */
+async function doShareApp() {
+    SoundFX.playPop();
+    const appUrl = (typeof window !== 'undefined' && window.location) ? window.location.href : 'https://hamidgazi.github.io/events/';
+    const shareData = {
+        title: 'Events Countdown',
+        text: 'Track birthdays, deadlines, meetings, and upcoming events with real-time countdowns.',
+        url: appUrl
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+            await navigator.share(shareData);
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+        }
+    }
+
+    try {
+        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(appUrl);
+            showToast('App link copied to clipboard! 📋');
+        } else {
+            prompt('Copy app link:', appUrl);
+        }
+    } catch (_) {
+        prompt('Copy app link:', appUrl);
+    }
+}
+
+async function doShareEvent(id, e) {
+    if (e) e.stopPropagation();
+    SoundFX.playPop();
+
+    const evt = events.find(function(item) { return item.id === id; });
+    if (!evt) return;
+
+    const d = daysLeft(evt.date);
+    const cat = CATS[evt.category] || CATS.general;
+    let timingStr = '';
+
+    if (d === 0) timingStr = 'is TODAY! 🎉';
+    else if (d === 1) timingStr = 'is TOMORROW! ⏳';
+    else if (d > 1) timingStr = 'is in ' + d + ' days (' + fmtDate(evt.date) + ') ⏳';
+    else timingStr = 'took place ' + Math.abs(d) + ' days ago (' + fmtDate(evt.date) + ')';
+
+    let text = cat.icon + ' ' + evt.name + ' ' + timingStr;
+    if (evt.notes) {
+        text += '\n📝 ' + evt.notes;
+    }
+    const appUrl = (typeof window !== 'undefined' && window.location) ? window.location.href : 'https://hamidgazi.github.io/events/';
+    text += '\n\nTrack countdown: ' + appUrl;
+
+    const shareData = {
+        title: evt.name + ' - Events Countdown',
+        text: text,
+        url: appUrl
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+            await navigator.share(shareData);
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+        }
+    }
+
+    try {
+        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+            showToast('Event countdown copied! 📋');
+        } else {
+            prompt('Copy event text:', text);
+        }
+    } catch (_) {
+        prompt('Copy event text:', text);
+    }
+}
+
+function celebrateToday(e) {
+    if (e) e.stopPropagation();
+    SoundFX.playCelebrate();
+    CanvasConfetti.burst();
+    showToast('🎉 Event is Today! Celebrate!');
+}
+
+// Sound toggle button listener
+const btnSound = document.getElementById('btn-sound-toggle');
+if (btnSound) {
+    btnSound.addEventListener('click', function() {
+        SoundFX.toggle();
+    });
+}
+
+// Share app button listener
+const btnShare = document.getElementById('btn-share-app');
+if (btnShare) {
+    btnShare.addEventListener('click', doShareApp);
+}
+
+// Search input listener
+const sInput = document.getElementById('search-input');
+if (sInput) {
+    sInput.addEventListener('input', function(e) {
+        searchQuery = e.target.value;
+        render();
+    });
+}
+
+const sClear = document.getElementById('search-clear');
+if (sClear) {
+    sClear.addEventListener('click', clearSearch);
+}
+
+// Date input change listener to update quick chips
+const fDateInput = document.getElementById('f-date');
+if (fDateInput) {
+    fDateInput.addEventListener('change', function() {
+        const val = fDateInput.value;
+        let matched = false;
+        document.querySelectorAll('.q-chip').forEach(function(c) {
+            const days = parseInt(c.dataset.days, 10);
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            if (formatLocalDate(d) === val) {
+                c.classList.add('active');
+                matched = true;
+            } else {
+                c.classList.remove('active');
+            }
+        });
+        if (!matched) highlightActiveQuickChip(-999);
+    });
+}
+
+SoundFX.updateUI();
 load();
 render();
 
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.0.1";
+const CURRENT_APP_VERSION = "1.1.0";
 
 // Display current version in footer on load
 const versionBadge = document.getElementById('app-version-display');
@@ -1863,11 +2460,14 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // Service Worker Registration for Offline Cache & Auto-Update
-if ('serviceWorker' in navigator) {
+if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     });
 }
 </script>
+
+<!-- ===== CONFETTI CANVAS ===== -->
+<canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none;"></canvas>
 </body>
 </html>

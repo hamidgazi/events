@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
+  "version": "1.1.0",
   "name": "Events Countdown",
   "updated": "2026-09-11",
-  "changelog": "Release v1.0.1: Added custom high-resolution Event Countdown calendar app icons (SVG and 512x512 / 192x192 PNGs)."
+  "changelog": "v1.1.0: Real-time search & filter bar, 1-tap Web Share for events & app, quick date selection chips, synthesized Web Audio micro-haptics with mute toggle, Today celebration confetti, and mobile GPU performance enhancements."
 }

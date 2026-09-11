@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>👑 Owner WhatsApp PIN Dashboard</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: rgba(22, 27, 34, 0.9);
+      --border: rgba(240, 246, 252, 0.12);
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --wa-green: #25d366;
+      --success: #238636;
+      --danger: #ff4444;
+      --warning: #e8b030;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(37, 211, 102, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(88, 166, 255, 0.08) 0%, transparent 40%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Quick PIN Lookup Box */
+    .pin-lookup-box {
+      background: rgba(13, 17, 23, 0.8);
+      border: 1px dashed rgba(88, 166, 255, 0.3);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .pin-display-big {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #ffd470;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .request-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .request-item {
+      background: rgba(13, 17, 23, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .req-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .req-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .req-contact {
+      font-size: 13px;
+      color: var(--wa-green);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .req-pin-badge {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffd470;
+      background: rgba(232, 176, 48, 0.15);
+      border: 1px solid rgba(232, 176, 48, 0.3);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .req-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-wa-reply {
+      background: #25d366;
+      color: #fff;
+    }
+
+    .btn-remote-approve {
+      background: #1f6feb;
+      color: #fff;
+    }
+
+    .btn-revoke {
+      background: rgba(255, 68, 68, 0.15);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      color: #ff5555;
+    }
+
+    /* Owner PIN screen */
+    #owner-auth-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 340px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    .auth-pin-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 6px;
+      background: rgba(13, 17, 23, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      margin: 16px 0;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OWNER PIN SCREEN -->
+  <div id="owner-auth-screen">
+    <div class="auth-box">
+      <div style="font-size: 40px; margin-bottom: 8px;">👑</div>
+      <h2 style="font-size: 18px; margin-bottom: 4px;">Owner Verification</h2>
+      <p style="font-size: 12.5px; color: var(--text-muted);">
+        Connected to WhatsApp <b>+91 9033200440</b><br>Owner PIN: <b>1234</b>
+      </p>
+      <form id="owner-login-form">
+        <input type="password" id="owner-pin" class="auth-pin-input" placeholder="••••" maxlength="6" autofocus required>
+        <button type="submit" class="btn-action btn-wa-reply" style="width: 100%; padding: 12px; font-size: 15px;">Unlock Owner Dashboard 🔓</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container" id="dashboard-app" style="display: none;">
+    
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <span>👑 WhatsApp Access Manager</span>
+      </div>
+      <button type="button" id="btn-lock" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 5px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;">
+        🔒 Lock
+      </button>
+    </div>
+
+    <!-- QUICK PIN GENERATOR TOOL -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>⚡ Quick WhatsApp PIN Generator</span>
+      </div>
+      <div class="pin-lookup-box">
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px;">
+          If someone sent you a WhatsApp message with their <b>Request ID</b> (e.g. <code>REQ-8421</code>), type it here to generate their PIN:
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="calc-req-code" placeholder="e.g. REQ-8421" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: #fff; font-size: 14px;">
+          <button type="button" id="btn-calc-pin" style="background: #1f6feb; border: none; color: #fff; font-weight: 700; padding: 0 16px; border-radius: 8px; cursor: pointer;">Get PIN</button>
+        </div>
+        <div class="pin-display-big" id="calculated-pin-display">------</div>
+        <p style="text-align: center; font-size: 12px; color: var(--text-muted);">Send this 6-digit PIN back to the user on WhatsApp.</p>
+      </div>
+    </div>
+
+    <!-- RECENT WHATSAPP ACCESS REQUESTS -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>📋 WhatsApp Requests</span>
+        <span id="requests-count-badge" style="font-size: 11px; background: rgba(37, 211, 102, 0.15); color: var(--wa-green); padding: 2px 8px; border-radius: 10px;">0</span>
+      </div>
+      <div class="request-list" id="requests-list"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const OWNER_PIN = '1234';
+    const DB_KEY_REQUESTS = 'events_approval_requests';
+    const channel = new BroadcastChannel('events_approval_bus');
+
+    // Deterministic PIN calculation
+    function computePin(code) {
+      if (!code) return '------';
+      let hash = 0;
+      const str = code.trim().toUpperCase() + 'SECRET_SALT_2026';
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 1000000;
+      }
+      return String(Math.abs(hash)).padStart(6, '7');
+    }
+
+    // Login
+    document.getElementById('owner-login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (document.getElementById('owner-pin').value.trim() === OWNER_PIN) {
+        document.getElementById('owner-auth-screen').style.display = 'none';
+        document.getElementById('dashboard-app').style.display = 'flex';
+        renderRequests();
+      } else {
+        alert('❌ Invalid PIN');
+      }
+    });
+
+    document.getElementById('btn-lock').addEventListener('click', () => {
+      document.getElementById('dashboard-app').style.display = 'none';
+      document.getElementById('owner-auth-screen').style.display = 'flex';
+      document.getElementById('owner-pin').value = '';
+    });
+
+    // Quick Tool
+    document.getElementById('btn-calc-pin').addEventListener('click', () => {
+      const code = document.getElementById('calc-req-code').value.trim();
+      document.getElementById('calculated-pin-display').textContent = computePin(code);
+    });
+
+    // Auto update on change
+    document.getElementById('calc-req-code').addEventListener('input', (e) => {
+      document.getElementById('calculated-pin-display').textContent = computePin(e.target.value);
+    });
+
+    // Render requests
+    function renderRequests() {
+      const all = JSON.parse(localStorage.getItem(DB_KEY_REQUESTS) || '[]');
+      document.getElementById('requests-count-badge').textContent = all.length;
+
+      const list = document.getElementById('requests-list');
+      if (all.length === 0) {
+        list.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 16px;">No requests yet. When a user taps "Request on WhatsApp", it will appear here.</div>`;
+        return;
+      }
+
+      list.innerHTML = all.slice().reverse().map(req => {
+        const pin = computePin(req.id);
+        const replyText = encodeURIComponent(
+          `Hi ${req.name}! 👋\nHere is your access PIN: ${pin}\n\nEnter this 6-digit code on your screen to unlock the Events App. Enjoy! 🎉`
+        );
+        const waLink = `https://wa.me/${req.contact}?text=${replyText}`;
+
+        return `
+          <div class="request-item">
+            <div class="req-top">
+              <div>
+                <div class="req-name">${escapeHTML(req.name)}</div>
+                <div class="req-contact">📱 ${escapeHTML(req.contact)}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 2px;">CODE: ${req.id}</div>
+                <div class="req-pin-badge">PIN: ${pin}</div>
+              </div>
+            </div>
+
+            <div class="req-actions">
+              <a href="${waLink}" target="_blank" class="btn-action btn-wa-reply">
+                <span>💬</span> Reply PIN on WhatsApp
+              </a>
+              <button type="button" class="btn-action btn-remote-approve" onclick="remoteApprove('${req.id}')">
+                <span>⚡</span> Remote Unlock
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.remoteApprove = function(reqId) {
+      channel.postMessage({ type: 'STATUS_UPDATE', reqId: reqId, status: 'approved' });
+      alert(`✅ Sent remote unlock command for ${reqId}!`);
+    };
+
+    channel.onmessage = (e) => {
+      if (e.data?.type === 'NEW_REQUEST') {
+        renderRequests();
+      }
+    };
+
+    function escapeHTML(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  </script>
+</body>
+</html>
