@@ -1,14 +1,17 @@
-// sw.js — Events Countdown Service Worker (v1.1.0)
+// sw.js — Events Countdown Service Worker (v1.1.1)
 // High-performance offline caching & instant startup on mobile
 
-const CACHE_NAME = 'events-countdown-v1.1.0';
+const CACHE_NAME = 'events-countdown-v1.1.1';
 const SHELL_ASSETS = [
   './',
   'index.html',
   'events.html',
   'manifest.json',
+  'icon-app-192.png',
+  'icon-app-512.png',
   'icon-192.png',
   'icon-512.png',
+  'apple-touch-icon.png',
   'icon.svg'
 ];
 

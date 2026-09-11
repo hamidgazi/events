@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "Events Countdown",
   "updated": "2026-09-11",
-  "changelog": "v1.1.0: Real-time search & filter bar, 1-tap Web Share for events & app, quick date selection chips, synthesized Web Audio micro-haptics with mute toggle, Today celebration confetti, and mobile GPU performance enhancements."
+  "changelog": "v1.1.1: Brand-new high-definition calendar app icon, iOS & Android home screen icon display fix, and instant update refresh."
 }
