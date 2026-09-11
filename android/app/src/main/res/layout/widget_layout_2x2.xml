@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_card_bg"
+    android:padding="12dp">
+
+    <!-- Top Label -->
+    <TextView
+        android:id="@+id/widget_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="📅 EVENTS"
+        android:textColor="#8b949e"
+        android:textSize="10.5sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.08" />
+
+    <!-- Center Big Countdown -->
+    <LinearLayout
+        android:id="@+id/widget_center_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_days_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textColor="#388bfd"
+            android:textSize="38sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_days_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DAYS LEFT"
+            android:textColor="#8b949e"
+            android:textSize="9.5sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Bottom Event Title -->
+    <TextView
+        android:id="@+id/widget_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="Next Event"
+        android:textColor="#f0f6fc"
+        android:textSize="12.5sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+</RelativeLayout>

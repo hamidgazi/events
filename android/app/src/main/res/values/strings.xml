@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Events Countdown</string>
+    <string name="widget_4x2_desc">Countdown to your next upcoming events</string>
+    <string name="widget_2x2_desc">Compact countdown to your nearest event</string>
+</resources>

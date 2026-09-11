@@ -1541,6 +1541,16 @@ function showToast(msg, options) {
 /* =====================================================
    STORAGE
 ===================================================== */
+function syncToAndroidWidget() {
+    try {
+        if (typeof window !== 'undefined' && window.AndroidWidget && typeof window.AndroidWidget.syncEvents === 'function') {
+            window.AndroidWidget.syncEvents(JSON.stringify(events));
+        }
+    } catch(err) {
+        console.warn('Widget sync:', err);
+    }
+}
+
 function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -1553,10 +1563,12 @@ function load() {
         events = SAMPLES.map((e,i) => ({ ...e, id: uid(), createdAt: Date.now()+i }));
         save();
     }
+    syncToAndroidWidget();
 }
 
 function save() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    syncToAndroidWidget();
 }
 
 /* =====================================================
@@ -2464,6 +2476,14 @@ if (btnPopupLater) btnPopupLater.addEventListener('click', () => {
 
 const btnManualCheck = document.getElementById('btn-manual-update-check');
 if (btnManualCheck) btnManualCheck.addEventListener('click', () => checkForAppUpdates(true));
+
+// URL Intent Actions (e.g. launched from Widget '+' button)
+try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'add') {
+        setTimeout(() => openModal(), 200);
+    }
+} catch(_) {}
 
 // Auto-check for updates on startup (after 2s) & when user re-opens the app
 setTimeout(() => checkForAppUpdates(false), 2000);
