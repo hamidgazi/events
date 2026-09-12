@@ -7,14 +7,14 @@ const SHELL_ASSETS = [
   'index.html',
   'events.html',
   'manifest.json',
-  'icon-app-192.png',
-  'icon-app-512.png',
-  'icon-192.png',
-  'icon-512.png',
-  'apple-touch-icon.png',
-  'icon-maskable-192.png',
-  'icon-maskable-512.png',
-  'icon.svg'
+  'icons/icon-app-192.png',
+  'icons/icon-app-512.png',
+  'icons/icon-192.png',
+  'icons/icon-512.png',
+  'icons/apple-touch-icon.png',
+  'icons/icon-maskable-192.png',
+  'icons/icon-maskable-512.png',
+  'icons/icon.svg'
 ];
 
 // Install: Pre-cache core app shell assets for instant cold start
