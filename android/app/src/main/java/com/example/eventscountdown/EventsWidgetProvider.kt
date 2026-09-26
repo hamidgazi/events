@@ -142,7 +142,9 @@ class EventsWidgetProvider : AppWidgetProvider() {
                         if (parsedDate != null) {
                             val eventMs = parsedDate.time
                             val diffDays = Math.round((eventMs - todayMs) / (1000.0 * 60 * 60 * 24))
-                            list.add(WidgetEventItem(name, dateStr, displaySdf.format(parsedDate), diffDays))
+                            if (diffDays >= 0) {
+                                list.add(WidgetEventItem(name, dateStr, displaySdf.format(parsedDate), diffDays))
+                            }
                         }
                     }
                 }
@@ -151,11 +153,7 @@ class EventsWidgetProvider : AppWidgetProvider() {
             }
 
             return list.sortedWith(Comparator { a, b ->
-                if (a.daysLeft >= 0 && b.daysLeft >= 0) {
-                    a.daysLeft.compareTo(b.daysLeft)
-                } else if (a.daysLeft < 0 && b.daysLeft < 0) {
-                    b.daysLeft.compareTo(a.daysLeft)
-                } else if (a.daysLeft >= 0) -1 else 1
+                a.daysLeft.compareTo(b.daysLeft)
             })
         }
     }

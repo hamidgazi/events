@@ -48,3 +48,10 @@ This document records architectural decisions, critical mobile quirks, operating
   2. Android app writes JSON to `SharedPreferences`.
   3. Android triggers `AppWidgetManager.notifyAppWidgetViewDataChanged()`.
   4. The Home Screen Widget reflects the new countdown immediately on the phone wallpaper without opening the app.
+
+### 3. Active-Only Event Counting & Home Screen Widget Exclusion
+* **Finding**: Counting total events with `events.length` or displaying past events on home screen widgets as "X days ago" causes user frustration because countdown tools are meant to track upcoming obligations.
+* **Solution**:
+  1. In `updateFilterCounts()`, filter events with `daysLeft(e.date) >= 0` before computing `counts.all` and category counts `counts[k]`. Past events are segregated into the collapsible past events view.
+  2. In Android `EventsWidgetProvider.kt`, enforce `diffDays >= 0` during `parseAndSortEvents()` so past events never take over the widget. When no active events remain, the widget transitions to an elegant empty state.
+

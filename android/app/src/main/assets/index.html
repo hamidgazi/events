@@ -1599,10 +1599,11 @@ function sortedFiltered() {
 }
 
 function updateFilterCounts() {
-    const counts = { all: events.length };
+    const activeEvents = events.filter(e => daysLeft(e.date) >= 0);
+    const counts = { all: activeEvents.length };
     Object.keys(CATS).forEach(function(k) { counts[k] = 0; });
 
-    events.forEach(function(e) {
+    activeEvents.forEach(function(e) {
         const k = (e.category && CATS[e.category]) ? e.category : 'general';
         counts[k] = (counts[k] || 0) + 1;
     });
@@ -1841,7 +1842,7 @@ function render() {
         if (searchClear) searchClear.style.display = 'flex';
         if (searchBadge) {
             searchBadge.style.display = 'inline-block';
-            searchBadge.textContent = all.length + ' found';
+            searchBadge.textContent = active.length + ' found';
         }
     } else {
         if (searchClear) searchClear.style.display = 'none';
