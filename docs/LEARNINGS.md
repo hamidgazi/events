@@ -55,3 +55,51 @@ This document records architectural decisions, critical mobile quirks, operating
   1. In `updateFilterCounts()`, filter events with `daysLeft(e.date) >= 0` before computing `counts.all` and category counts `counts[k]`. Past events are segregated into the collapsible past events view.
   2. In Android `EventsWidgetProvider.kt`, enforce `diffDays >= 0` during `parseAndSortEvents()` so past events never take over the widget. When no active events remain, the widget transitions to an elegant empty state.
 
+---
+
+## 🧠 Cognitive Ergonomics & Mobile UI Psychology (v1.2.0 Redesign)
+
+### 1. Hero Countdown Spotlight & Temporal Anchoring
+* **Finding**: A long flat list forces the user's brain to scan and compare every date to find their most urgent priority, increasing decision fatigue.
+* **Solution**: Spotlight the single nearest active event in a prominent **Hero Card** anchored at the top of the viewport. Featuring live seconds/minutes tickers and an urgency-tuned ambient glow, users instantly grasp their next deadline in under 200ms without scrolling.
+
+### 2. Miller's Law Horizon Chunking (7±2 Working Memory)
+* **Finding**: Unchunked lists exceeding 7 items overwhelm short-term working memory.
+* **Solution**: Chunk subsequent events into distinct psychological time horizons:
+  - **🔥 This Week (1–7 days)**: Immediate high-priority focus.
+  - **🗓️ This Month (8–30 days)**: Mid-range planning window.
+  - **⏳ Later On (>30 days)**: Low-urgency upcoming milestones.
+* **Result**: Each bucket rarely exceeds 3–5 items, keeping cognitive load well within Miller's $7 \pm 2$ limit and providing clear temporal structure.
+
+### 3. Bottom Thumb Dock (Steven Hoober Thumb Zone)
+* **Finding**: Modern smartphones have 6.5"+ displays. Placing primary actions (like Add Event, Filters, and Settings) in top headers forces painful finger overextension or awkward two-handed grips.
+* **Solution**: Transition to a floating glassmorphic **Bottom Thumb Dock** pinned to the lower edge with `env(safe-area-inset-bottom)`. The elevated `[+]` FAB sits squarely in the user's natural thumb sweep arc, while secondary options (Export, Import, Sound, Share) are tucked into an ergonomic `(⋯) More` bottom sheet.
+
+### 4. Zero-Dependency RFC 5545 iCalendar (.ics) Generation
+* **Finding**: Mobile users frequently want countdown events added to their phone's native Google Calendar or Apple Calendar without signing into third-party cloud integrations or OAuth APIs.
+* **Solution**: Format an RFC 5545 standard `.ics` payload directly in vanilla JavaScript:
+  ```javascript
+  const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Events Countdown App//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:' + (evt.id || Date.now()) + '@eventscountdown.app',
+      'DTSTART;VALUE=DATE:' + dtStart,
+      'DTEND;VALUE=DATE:' + dtEnd,
+      'SUMMARY:' + evt.name,
+      'DESCRIPTION:' + (evt.notes || ''),
+      'STATUS:CONFIRMED',
+      'END:VEVENT',
+      'END:VCALENDAR'
+  ].join('\r\n');
+  ```
+  Triggering download via a data `Blob` (`text/calendar;charset=utf-8`) immediately prompts Android and iOS to open the event in the device's default Calendar app with 1 tap.
+
+### 5. Smart Keyword Auto-Categorization & Tactile Chips
+* **Finding**: Dropdown selects (`<select>`) have high interaction friction on touchscreens, requiring 3-4 taps to open an OS picker and choose an option.
+* **Solution**: Replace standard dropdowns with horizontal scrollable category chip pills and bind an `input` listener to the title field. As the user types (e.g. *"Doctor checkup"*, *"Mom birthday"*), the app instantly auto-detects the matching category (`reminder`, `birthday`), highlights the corresponding chip, and displays a subtle `✨ Auto-detected Reminder` feedback badge.
+
+

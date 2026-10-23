@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.1.2">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.1.2">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.1.2">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.2.0">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.2.0">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.2.0">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -62,7 +62,14 @@ const requiredIds = [
     'hdr-chip',
     'modal',
     'ev-form',
-    'del-sheet'
+    'del-sheet',
+    'hero-spotlight',
+    'bottom-dock',
+    'fab',
+    'dock-btn-more',
+    'detail-sheet',
+    'more-sheet',
+    'category-chips-selector'
 ];
 
 requiredIds.forEach(id => {
@@ -151,6 +158,12 @@ mockElements['search-clear'] = createMockElement('button', 'search-clear');
 mockElements['search-badge'] = createMockElement('span', 'search-badge');
 mockElements['confetti-canvas'] = createMockElement('canvas', 'confetti-canvas');
 
+const mockCatChips = ['general', 'birthday', 'meeting', 'deadline', 'holiday', 'reminder'].map(c => {
+    const el = createMockElement('button');
+    el.dataset.cat = c;
+    return el;
+});
+
 const mockDocument = {
     getElementById(id) {
         if (!mockElements[id]) {
@@ -162,6 +175,7 @@ const mockDocument = {
         return createMockElement('div');
     },
     querySelectorAll(sel) {
+        if (sel === '.cat-chip') return mockCatChips;
         return [];
     },
     createElement(tag) {
@@ -473,4 +487,101 @@ assert.strictEqual(mockElements['search-badge'].textContent, '1 found', 'search-
 sandbox.clearSearch();
 console.log('  [PASS] updateFilterCounts and searchBadge count ONLY active upcoming events.');
 
-console.log('\n=== ALL 16 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+// 17. Test Hero Spotlight & Live Exact Countdown Ticker
+console.log('\nTest 17: Hero Spotlight Card & Live Exact Countdown Ticker...');
+assert(typeof sandbox.liveExactTicker === 'function', 'liveExactTicker function must exist');
+const testDate = fmtIso(new Date(Date.now() + 86400000 * 3 + 3600000 * 5)); // 3 days 5 hours
+const tickerStr = sandbox.liveExactTicker(testDate);
+assert(tickerStr.includes('d') && tickerStr.includes('h') && tickerStr.includes('m') && tickerStr.includes('s'), 'liveExactTicker must produce days, hours, mins, secs');
+
+assert(typeof sandbox.heroHtml === 'function', 'heroHtml function must exist');
+const sampleHeroEvt = { id: 'hero-test-1', name: 'Product Launch', date: testDate, category: 'deadline', notes: 'Important launch day' };
+const heroMarkup = sandbox.heroHtml(sampleHeroEvt);
+assert(heroMarkup.includes('hero-card'), 'heroHtml must render hero-card');
+assert(heroMarkup.includes('Product Launch'), 'heroHtml must include event title');
+assert(heroMarkup.includes('hero-spotlight-pill'), 'heroHtml must include NEXT UP spotlight pill');
+assert(heroMarkup.includes('hero-live-ticker'), 'heroHtml must include hero-live-ticker element');
+console.log('  [PASS] Hero spotlight HTML generation and exact live countdown ticker verified.');
+
+// 18. Test Time Horizon Chunking (Miller's Law Groups)
+console.log('\nTest 18: Time Horizon Chunking (Miller\'s Law Groups)...');
+const tNow = new Date();
+const d1 = fmtIso(new Date(tNow.getTime() + 1 * 86400000));  // Spotlight (nearest)
+const d2 = fmtIso(new Date(tNow.getTime() + 4 * 86400000));  // This Week (<=7d)
+const d3 = fmtIso(new Date(tNow.getTime() + 15 * 86400000)); // This Month (8-30d)
+const d4 = fmtIso(new Date(tNow.getTime() + 60 * 86400000)); // Later On (>30d)
+
+sandbox.events = [
+    { id: 'h1', name: 'Nearest Event', date: d1, category: 'general', notes: '' },
+    { id: 'h2', name: 'This Week Event', date: d2, category: 'meeting', notes: '' },
+    { id: 'h3', name: 'This Month Event', date: d3, category: 'birthday', notes: '' },
+    { id: 'h4', name: 'Later On Event', date: d4, category: 'holiday', notes: '' }
+];
+sandbox.render();
+
+assert(mockElements['hero-spotlight'].innerHTML.includes('Nearest Event'), 'hero-spotlight must contain the nearest upcoming event');
+const activeHtml = mockElements['active-list'].innerHTML;
+assert(activeHtml.includes('This Week'), 'active-list must contain "This Week" horizon header');
+assert(activeHtml.includes('This Month'), 'active-list must contain "This Month" horizon header');
+assert(activeHtml.includes('Later On'), 'active-list must contain "Later On" horizon header');
+assert(activeHtml.includes('This Week Event'), 'active-list must render week event');
+assert(activeHtml.includes('This Month Event'), 'active-list must render month event');
+assert(activeHtml.includes('Later On Event'), 'active-list must render later event');
+console.log('  [PASS] Horizon groups (This Week, This Month, Later On) chunked and rendered perfectly.');
+
+// 19. Test Quick-View Detail Modal Sheet & RFC 5545 iCalendar (.ics) Export
+console.log('\nTest 19: Quick-View Detail Modal Sheet & RFC 5545 iCalendar (.ics) Export...');
+assert(typeof sandbox.openDetailModal === 'function', 'openDetailModal function must exist');
+assert(typeof sandbox.closeDetailModal === 'function', 'closeDetailModal function must exist');
+assert(typeof sandbox.downloadIcsFile === 'function', 'downloadIcsFile function must exist');
+
+sandbox.openDetailModal('h2');
+assert(mockElements['detail-sheet'].classList.contains('on'), 'openDetailModal must add "on" class to detail-sheet');
+assert.strictEqual(mockElements['detail-title'].textContent, 'This Week Event', 'detail modal title must match event');
+
+sandbox.closeDetailModal();
+assert(!mockElements['detail-sheet'].classList.contains('on'), 'closeDetailModal must remove "on" class from detail-sheet');
+
+let generatedBlob = null;
+const origBlob = sandbox.Blob;
+sandbox.Blob = class {
+    constructor(parts, opts) {
+        this.parts = parts;
+        this.opts = opts;
+        generatedBlob = parts.join('');
+    }
+};
+sandbox.downloadIcsFile(sandbox.events[0]);
+assert(generatedBlob !== null, 'downloadIcsFile must create a Blob');
+assert(generatedBlob.includes('BEGIN:VCALENDAR'), '.ics must contain BEGIN:VCALENDAR');
+assert(generatedBlob.includes('VERSION:2.0'), '.ics must contain VERSION:2.0');
+assert(generatedBlob.includes('SUMMARY:Nearest Event'), '.ics must include event name in SUMMARY');
+assert(generatedBlob.includes('END:VCALENDAR'), '.ics must contain END:VCALENDAR');
+sandbox.Blob = origBlob;
+console.log('  [PASS] Quick-View detail sheet and offline RFC 5545 .ics generation verified.');
+
+// 20. Test Smart Auto-Categorization & Tactile Category Chips
+console.log('\nTest 20: Smart Auto-Categorization & Tactile Category Chips...');
+assert(Array.isArray(sandbox.CAT_KEYWORDS), 'CAT_KEYWORDS must be an array of regex rules');
+assert(typeof sandbox.checkAutoCategorize === 'function', 'checkAutoCategorize must exist');
+assert(typeof sandbox.selectCategoryChip === 'function', 'selectCategoryChip must exist');
+
+sandbox.checkAutoCategorize('Dentist checkup at 2pm');
+assert.strictEqual(mockElements['f-cat'].value, 'reminder', 'Dentist should auto-categorize to reminder');
+
+sandbox.checkAutoCategorize('Birthday party with family');
+assert.strictEqual(mockElements['f-cat'].value, 'birthday', 'Birthday party should auto-categorize to birthday');
+
+sandbox.checkAutoCategorize('Urgent project deadline');
+assert.strictEqual(mockElements['f-cat'].value, 'deadline', 'Project deadline should auto-categorize to deadline');
+
+sandbox.checkAutoCategorize('Flight tickets to Maldives');
+assert.strictEqual(mockElements['f-cat'].value, 'holiday', 'Flight tickets should auto-categorize to holiday');
+
+sandbox.checkAutoCategorize('Client zoom conference');
+assert.strictEqual(mockElements['f-cat'].value, 'meeting', 'Zoom conference should auto-categorize to meeting');
+
+console.log('  [PASS] Keyword auto-categorization and synchronized tactile category chips verified.');
+
+console.log('\n=== ALL 20 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+process.exit(0);

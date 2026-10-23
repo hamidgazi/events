@@ -1,6 +1,6 @@
-# 📅 Events Countdown & Planner
+# 📅 Events Countdown & Planner (v1.2.0)
 
-A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), swipe gesture mechanics, and offline-first client storage.
+A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), Hero Countdown Spotlight, Miller's Law Horizon Chunking, ergonomic Bottom Thumb Dock, 1-tap iCalendar (.ics) export, and offline-first client storage.
 
 - **GitHub Repository**: [https://github.com/hamidgazi/events](https://github.com/hamidgazi/events)
 - **Live PWA App**: [https://hamidgazi.github.io/events/](https://hamidgazi.github.io/events/)
@@ -17,7 +17,7 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 | **Source App** | Source Code | [events.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/events.html) | Canonical source HTML app with active-only event counting |
 | **1-Click Launcher** | Batch Script | [OPEN_APP.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/OPEN_APP.bat) | Instant desktop launcher to open application in default browser |
 | **1-Click Sync** | Batch Script | [push_to_github.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/push_to_github.bat) | Git commit, build verify, and GitHub push deployment script |
-| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 16-point automated verification and DOM simulation suite |
+| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 20-point automated verification and DOM simulation suite |
 
 ---
 
@@ -51,7 +51,7 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 │   └── PROGRESS.md         # Detailed chronological development log
 │
 └── tests/                  # 🧪 Automated verification suite
-    └── test_events.js      # 16 automated tests covering UI, gestures, sync, & active counts
+    └── test_events.js      # 20 automated tests covering UI, Hero card, horizons, detail modal, & active counts
 ```
 
 ---
@@ -95,7 +95,7 @@ cd ..
 | :--- | :--- | :--- | :--- |
 | **Active-Only Counts** | `updateFilterCounts()` | ✅ Verified | Only active upcoming events (`daysLeft >= 0`) counted in badges |
 | **Widget Exclusions** | `EventsWidgetProvider` | ✅ Verified | Past events (`diffDays < 0`) excluded from Home Screen widgets |
-| **Automated Tests** | `node tests/test_events.js` | ✅ 16/16 Passed | Verified state, categories, import/export, swipe, audio & active counts |
+| **Automated Tests** | `node tests/test_events.js` | ✅ 20/20 Passed | Verified state, Hero spotlight, horizons, modal, swipe, audio & active counts |
 | **Script Compilation** | `node --check` | ✅ 0 Errors | Pure ES6 JavaScript cleanly parsed with zero runtime syntax errors |
 | **Sync Parity** | `events.html` vs `index.html` | ✅ 100% Identical | Bit-for-bit parity guaranteed across root and Android assets |
 | **Android Build** | Gradle 9.4.1 / Java 21 | ✅ Built | Clean compilation with zero build errors |

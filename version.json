@@ -1,6 +1,6 @@
 {
-  "version": "1.1.2",
+  "version": "1.2.0",
   "name": "Events Countdown",
-  "updated": "2026-09-11",
-  "changelog": "v1.1.2: Fixed icon clipping with 100% full-version 512x512 and 192x192 icons, added Android adaptive maskable icons, and enhanced instant cold start."
+  "updated": "2026-10-23",
+  "changelog": "v1.2.0: Deep redesign with Hero Countdown Spotlight, Miller Law time horizon grouping (This Week, This Month, Later On), ergonomic Bottom Thumb Dock with elevated FAB, Quick-View detail sheet with 1-tap iCalendar (.ics) export, and smart auto-categorization."
 }
