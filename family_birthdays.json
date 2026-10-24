@@ -1,0 +1,132 @@
+[
+  {
+    "id": "b-fam-siraj-1966",
+    "name": "Siraj",
+    "birthDate": "1966-07-30",
+    "date": "1966-07-30",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Elder • Diamond Jubilee",
+    "createdAt": 1700000000001
+  },
+  {
+    "id": "b-fam-rasida-1971",
+    "name": "Rasida",
+    "birthDate": "1971-12-22",
+    "date": "1971-12-22",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Elder • 55th Milestone",
+    "createdAt": 1700000000002
+  },
+  {
+    "id": "b-fam-munira-1993",
+    "name": "Munira",
+    "birthDate": "1993-11-07",
+    "date": "1993-11-07",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000003
+  },
+  {
+    "id": "b-fam-ahamed-1995",
+    "name": "Ahamed",
+    "birthDate": "1995-09-19",
+    "date": "1995-09-19",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000004
+  },
+  {
+    "id": "b-fam-mahmood-1997",
+    "name": "Mahmood",
+    "birthDate": "1997-09-08",
+    "date": "1997-09-08",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member • 30th Milestone upcoming",
+    "createdAt": 1700000000005
+  },
+  {
+    "id": "b-fam-shemil-2001",
+    "name": "Shemil",
+    "birthDate": "2001-07-27",
+    "date": "2001-07-27",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000006
+  },
+  {
+    "id": "b-fam-aamena-2001",
+    "name": "Aamena",
+    "birthDate": "2001-05-11",
+    "date": "2001-05-11",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000007
+  },
+  {
+    "id": "b-fam-hamid-2002",
+    "name": "Hamid",
+    "birthDate": "2002-11-23",
+    "date": "2002-11-23",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000008
+  },
+  {
+    "id": "b-fam-amina-2003",
+    "name": "Amina",
+    "birthDate": "2003-09-17",
+    "date": "2003-09-17",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000009
+  },
+  {
+    "id": "b-fam-saqlain-2013",
+    "name": "Saqlain",
+    "birthDate": "2013-07-29",
+    "date": "2013-07-29",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000010
+  },
+  {
+    "id": "b-fam-anas-2018",
+    "name": "Anas",
+    "birthDate": "2018-04-08",
+    "date": "2018-04-08",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000011
+  },
+  {
+    "id": "b-fam-hamza-2022",
+    "name": "Hamza",
+    "birthDate": "2022-10-31",
+    "date": "2022-10-31",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000012
+  },
+  {
+    "id": "b-fam-yusuf-2023",
+    "name": "Yusuf",
+    "birthDate": "2023-07-05",
+    "date": "2023-07-05",
+    "category": "birthday",
+    "relationship": "family",
+    "notes": "Family Member",
+    "createdAt": 1700000000013
+  }
+]

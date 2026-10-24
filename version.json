@@ -1,6 +1,6 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "name": "Events Countdown",
   "updated": "2026-10-24",
-  "changelog": "v1.5.0: Upgraded card sizing to executive medium (~88px) with 44px avatar bubbles. Added exact completed age breakdown (years, months, days) directly on every birthday card. Introduced Smart Horizon Countdown Engine: shows relative calendar horizon (e.g. '7M 12D') for birthdays/events > 1 month away, and exact days countdown ('14d left', 'Tomorrow!', 'TODAY!') within 30 days."
+  "changelog": "v1.6.0: Integrated authentic 13-member family birthday roster with ISO birth dates and smart deduplicating auto-migration (preserving manually entered Amina & Hamid while purging legacy placeholders). Added 'Eldest to Youngest' (Age Order) sort toggle alongside the standard 'Upcoming' sort. Added Family Pulse Summary bar showing family count and next upcoming birthday. Included canonical family_birthdays.json backup in repository."
 }

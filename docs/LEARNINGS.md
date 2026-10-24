@@ -144,3 +144,19 @@ This document records architectural decisions, critical mobile quirks, operating
   - For horizons $\le 30\text{ days}$, displays actionable urgent countdown (`14d left`, `Tomorrow!`, `🎉 TODAY!`).
 * **Outcome**:
   Provides the optimal middle ground between dense scannability and rich chronological context with zero clutter and zero mental math.
+
+
+---
+
+### 9. Client-Side Safe Auto-Migration, Deduplication & Generational Dual Sorting (v1.6.0)
+* **The Problem (Client-Side Storage Drift)**:
+  When a web application relies purely on client-side `localStorage`, updating default seed samples in the source code has zero effect on users who have already loaded the app and manually added custom records. Furthermore, a naive migration could either duplicate user-entered items or wipe their custom data.
+* **The Solution: Deduplicating One-Time Migration (`migrateFamilyRoster()`)**:
+  - Sets a distinct migration sentinel key: `localStorage.getItem('events_family_roster_v160_migrated')`.
+  - **Purge Obsolete Dummies**: Specifically targets known legacy placeholder dummy names (*"Mom's Birthday"*, *"Alex Johnson"*, *"Sarah Miller"*, *"Team Meeting"*, etc.) while keeping any custom user events intact.
+  - **Collision-Aware Insertion**: For each official family record, probes `events.some(...)` against both name and birthdate. Because the user had manually entered Amina (`2003-09-17`) and Hamid (`2002-11-23`), the engine recognizes the collision and preserves the user's existing records (along with custom IDs, notes, and timestamps) without creating duplicate cards.
+* **Dual Sorting Architecture (Tactical Urgency vs Generational Hierarchy)**:
+  - *Upcoming Mode (Default)*: Sorts by `daysLeft` ascending. Elevates the immediate next celebration (Hamza in 7 days) to the Hero Spotlight card with live ticking seconds, and groups subsequent milestones into *This Week*, *This Month*, and *Later On*.
+  - *Eldest First Mode*: Sorts by `new Date(birthDate)` ascending. Hides the urgency spotlight and renders all 13 family members in clean chronological hierarchy from Siraj (age 60) down to Yusuf (age 3).
+* **Family Pulse Summary Bar**:
+  - Provides an executive top-level status chip (`👨‍👩‍👧 13 Family Members • 🎂 Next: Hamza in 7d (Turning 4)`), giving immediate peripheral situational awareness without cluttering individual cards.

@@ -1,6 +1,6 @@
-# 📅 Events Countdown & Birthday Tracker (v1.5.0)
+# 📅 Events Countdown & Authentic Family Birthday Tracker (v1.6.0)
 
-A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), Medium Ergonomic Card Rows (88px) with Complete Age Breakdown (`Age: 31 yrs, 7 mos, 9 days`), Smart Horizon Countdown (`7M 12D` for >1 month, exact days for ≤30 days), Perpetual Birthday Tracker & Age Engine, Hero Countdown Spotlight, Miller's Law Horizon Chunking, ergonomic Bottom Thumb Dock, 1-tap WhatsApp greetings, 1-tap iCalendar (.ics) export, and offline-first client storage.
+A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), Authentic 13-Member Family Birthday Roster, Smart Deduplicating Auto-Migration (preserving manually entered records), Dual Sorting Engine (`📅 Upcoming` vs `👑 Eldest First`), Family Pulse Summary Bar, Medium Ergonomic Card Rows (88px) with Complete Age Breakdown (`Age: 31 yrs, 7 mos, 9 days`), Smart Horizon Countdown (`7M 12D` for >1 month, exact days for ≤30 days), Perpetual Birthday Tracker & Age Engine, Hero Countdown Spotlight, Miller's Law Horizon Chunking, ergonomic Bottom Thumb Dock, 1-tap WhatsApp greetings, 1-tap iCalendar (.ics) export, and offline-first client storage.
 
 - **GitHub Repository**: [https://github.com/hamidgazi/events](https://github.com/hamidgazi/events)
 - **Live PWA App**: [https://hamidgazi.github.io/events/](https://hamidgazi.github.io/events/)
@@ -15,9 +15,10 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 | **Android APK** | Native Package | [EventsCountdown.apk](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/EventsCountdown.apk) | Compiled release package with 4x2 & 2x2 home screen widgets |
 | **Production PWA** | Web Application | [index.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/index.html) | Standalone, zero-dependency offline web app (GitHub Pages root) |
 | **Source App** | Source Code | [events.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/events.html) | Canonical source HTML app with medium card & smart horizon architecture |
+| **Family Backup** | JSON Dataset | [family_birthdays.json](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/family_birthdays.json) | Canonical 13-member family birthday backup file for 1-click import |
 | **1-Click Launcher** | Batch Script | [OPEN_APP.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/OPEN_APP.bat) | Instant desktop launcher to open application in default browser |
 | **1-Click Sync** | Batch Script | [push_to_github.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/push_to_github.bat) | Git commit, build verify, and GitHub push deployment script |
-| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 27-point automated verification and DOM simulation suite |
+| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 28-point automated verification and DOM simulation suite |
 
 ---
 
@@ -46,12 +47,14 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 │   ├── app/src/main/java/  # Kotlin sources: MainActivity, AndroidWidgetBridge, WidgetProviders
 │   └── app/src/main/assets/ # Embedded offline web assets synced with root
 │
+├── family_birthdays.json   # 🎂 Standalone 13-member family birthday backup file
+│
 ├── docs/                   # 📝 Developer changelogs, architecture notes & learnings
 │   ├── LEARNINGS.md        # Project-specific technical learnings
 │   └── PROGRESS.md         # Detailed chronological development log
 │
 └── tests/                  # 🧪 Automated verification suite
-    └── test_events.js      # 27 automated tests covering medium cards, smart horizon, birthdays, age math, horizons, & counts
+    └── test_events.js      # 28 automated tests covering family roster, deduplicating migration, dual sorting, & counts
 ```
 
 ---
@@ -84,12 +87,15 @@ node -e "const fs = require('fs'); const s = fs.readFileSync('events.html', 'utf
 
 | Check | Target | Status | Guarantee |
 | :--- | :--- | :--- | :--- |
+| **Family Roster** | Authentic 13 Members | ✅ Verified | All 13 family members integrated with ISO birth dates and completed age breakdown |
+| **Smart Migration** | Deduplicating Auto-Merge | ✅ Verified | Preserves user's manually entered Amina & Hamid; cleanly purges legacy dummy samples |
+| **Dual Sorting** | Upcoming vs Eldest First | ✅ Verified | 1-tap toggle between upcoming countdown (Hamza in 7d) and age hierarchy (Siraj [60] down to Yusuf [3]) |
+| **Family Pulse** | Real-Time Summary Bar | ✅ Verified | Subtle banner displaying member count and immediate upcoming birthday |
 | **Card Sizing** | Medium Ergonomic Card (88px) | ✅ Verified | 88px 3-tier layout, 44px avatar, generous touch target |
-| **Age Breakdown** | Full Age on Card | ✅ Verified | Displays completed `Age: X yrs, Y mos, Z days` directly on card |
 | **Smart Horizon** | Dynamic Countdown Format | ✅ Verified | `7M 12D` for >1 mo, exact days for ≤30d, `🎉 TODAY!` on day of event |
 | **Birthday Engine** | `computeBirthdayMetrics()` | ✅ Verified | Accurate age calculation (yrs, mos, days, days lived) + perpetual rollover |
 | **Active-Only Counts** | `updateFilterCounts()` | ✅ Verified | Only active upcoming events (`daysLeft >= 0`) counted in badges |
 | **Widget Exclusions** | `EventsWidgetProvider` | ✅ Verified | Past events (`diffDays < 0`) excluded from Home Screen widgets |
-| **Automated Tests** | `node tests/test_events.js` | ✅ 27/27 Passed | Verified medium rows, smart horizons, birthdays, Hero spotlight, horizons, modal, swipe, audio |
+| **Automated Tests** | `node tests/test_events.js` | ✅ 28/28 Passed | Verified family roster, deduplicating migration, dual sorting, pulse bar, audio |
 | **Script Compilation** | `node --check` | ✅ 0 Errors | Pure ES6 JavaScript cleanly parsed with zero runtime syntax errors |
 | **Sync Parity** | `events.html` vs `index.html` | ✅ 100% Identical | Bit-for-bit parity guaranteed across root and Android assets |

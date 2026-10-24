@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#0d1117">
     <title>Events Countdown</title>
     <!-- Mobile Home Screen Icons & Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.5.0">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.5.0">
-    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.5.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.5.0">
-    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.5.0">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.5.0">
-    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.5.0">
-    <link rel="manifest" href="manifest.json?v=1.5.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.0">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.6.0">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.6.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.0">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.6.0">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.6.0">
+    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.6.0">
+    <link rel="manifest" href="manifest.json?v=1.6.0">
     <style>
         /* ============================================
            CSS VARIABLES (Deep OLED Glassmorphic)
@@ -414,6 +414,78 @@
             border-bottom: 1px solid rgba(255,255,255,.04);
         }
         #bday-filter-bar::-webkit-scrollbar { display: none; }
+
+        /* ============================================
+           FAMILY PULSE BAR & AGE SORT TOGGLE (v1.6.0)
+        ============================================ */
+        .family-pulse-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            backdrop-filter: blur(8px);
+        }
+        .family-pulse-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .family-pulse-count {
+            font-weight: 700;
+            color: var(--text-1);
+            letter-spacing: -0.2px;
+        }
+        .family-pulse-sep {
+            color: var(--text-3);
+            font-size: 11px;
+        }
+        .family-pulse-next {
+            color: #ffd60a;
+            font-weight: 600;
+            font-size: 11.5px;
+        }
+        .bday-sort-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            padding: 0 2px;
+        }
+        .bday-sort-label {
+            font-size: 11px;
+            color: var(--text-3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 2px;
+        }
+        .bday-sort-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 5px 11px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-2);
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .bday-sort-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-1);
+        }
+        .bday-sort-btn.active {
+            background: rgba(255, 214, 10, 0.16);
+            border-color: rgba(255, 214, 10, 0.4);
+            color: #ffd60a;
+        }
 
         /* ============================================
            FILTER BAR
@@ -1827,6 +1899,24 @@
 
 <!-- ===== MAIN ===== -->
 <main>
+    <!-- Family Pulse Bar & Sort Mode (Birthdays Mode) -->
+    <div class="family-pulse-bar" id="family-pulse-bar" style="display:none">
+        <div class="family-pulse-item">
+            <span class="family-pulse-icon">👨‍👩‍👧</span>
+            <span class="family-pulse-count" id="family-pulse-count">13 Family Members</span>
+        </div>
+        <span class="family-pulse-sep">•</span>
+        <div class="family-pulse-item">
+            <span class="family-pulse-next" id="family-pulse-next">🎂 Next: Hamza in 7d (Turning 4)</span>
+        </div>
+    </div>
+
+    <div class="bday-sort-bar" id="bday-sort-bar" style="display:none">
+        <span class="bday-sort-label">Sort by:</span>
+        <button type="button" class="bday-sort-btn active" id="sort-btn-upcoming" onclick="setBdaySortMode('upcoming')">📅 Upcoming</button>
+        <button type="button" class="bday-sort-btn" id="sort-btn-age" onclick="setBdaySortMode('age')">👑 Eldest First</button>
+    </div>
+
     <!-- Hero Spotlight for Nearest Urgent Event -->
     <div id="hero-spotlight" class="hero-spotlight-container"></div>
 
@@ -2104,7 +2194,7 @@
         <div style="font-size:40px; margin-bottom:6px;">🚀</div>
         <h3 style="font-size:18px; margin-bottom:4px; color:#fff;">New Update Available!</h3>
         <p style="font-size:13.5px; color:var(--text-2); margin-bottom:14px;">
-            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.5.0</b> is ready for you.
+            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.6.0</b> is ready for you.
         </p>
         <div id="popup-changelog-box" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:12px; color:var(--text-1); text-align:left; margin-bottom:18px; line-height:1.45;">
             <b style="color:var(--text-3); font-size:11px; text-transform:uppercase;">What's New:</b><br>
@@ -2153,15 +2243,23 @@ function relDate(daysFromNow) {
     return formatLocalDate(d);
 }
 
-const SAMPLES = [
-    { name: "Mom's Birthday",       birthDate: '1968-11-06', date: '1968-11-06', category: 'birthday', relationship: 'family', giftIdeas: 'Floral scarf, perfume', notes: 'Call in the morning and send flowers' },
-    { name: 'Alex Johnson',         birthDate: '1995-03-15', date: '1995-03-15', category: 'birthday', relationship: 'friend', giftIdeas: 'Mechanical keyboard, espresso beans', notes: 'Party with college crew' },
-    { name: 'Sarah Miller',         birthDate: '2002-08-20', date: '2002-08-20', category: 'birthday', relationship: 'work',   giftIdeas: 'Tech books', notes: 'Design lead team card' },
-    { name: 'Team Meeting',         date: relDate(1),  category: 'meeting',  notes: 'Q3 planning session — room 3B' },
-    { name: 'Project Deadline',     date: relDate(3),  category: 'deadline', notes: 'Submit final report to manager' },
-    { name: 'Beach Holiday',        date: relDate(10), category: 'holiday',  notes: 'Pack sunscreen and swimwear!' },
-    { name: 'Doctor Reminder',      date: relDate(21), category: 'reminder', notes: 'Annual checkup — bring documents' },
+const FAMILY_ROSTER = [
+    { name: "Siraj",   birthDate: "1966-07-30", date: "1966-07-30", category: "birthday", relationship: "family", notes: "Family Elder • Diamond Jubilee" },
+    { name: "Rasida",  birthDate: "1971-12-22", date: "1971-12-22", category: "birthday", relationship: "family", notes: "Family Elder • 55th Milestone" },
+    { name: "Munira",  birthDate: "1993-11-07", date: "1993-11-07", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Ahamed",  birthDate: "1995-09-19", date: "1995-09-19", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Mahmood", birthDate: "1997-09-08", date: "1997-09-08", category: "birthday", relationship: "family", notes: "Family Member • 30th Milestone upcoming" },
+    { name: "Shemil",  birthDate: "2001-07-27", date: "2001-07-27", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Aamena",  birthDate: "2001-05-11", date: "2001-05-11", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Hamid",   birthDate: "2002-11-23", date: "2002-11-23", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Amina",   birthDate: "2003-09-17", date: "2003-09-17", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Saqlain", birthDate: "2013-07-29", date: "2013-07-29", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Anas",    birthDate: "2018-04-08", date: "2018-04-08", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Hamza",   birthDate: "2022-10-31", date: "2022-10-31", category: "birthday", relationship: "family", notes: "Family Member" },
+    { name: "Yusuf",   birthDate: "2023-07-05", date: "2023-07-05", category: "birthday", relationship: "family", notes: "Family Member" }
 ];
+
+const SAMPLES = FAMILY_ROSTER;
 
 /* =====================================================
    STATE
@@ -2177,7 +2275,31 @@ let currentViewTab = (function() {
     }
 })();
 let activeBdayRelFilter = 'all';
+let bdaySortMode = (function() {
+    try {
+        return localStorage.getItem('events_bday_sort_mode') || 'upcoming';
+    } catch (_) {
+        return 'upcoming';
+    }
+})();
 let searchQuery = '';
+
+function setBdaySortMode(mode) {
+    bdaySortMode = mode;
+    try { localStorage.setItem('events_bday_sort_mode', mode); } catch (_) {}
+    const btnUp = document.getElementById('sort-btn-upcoming');
+    const btnAge = document.getElementById('sort-btn-age');
+    if (btnUp && btnAge) {
+        if (mode === 'age') {
+            btnUp.classList.remove('active');
+            btnAge.classList.add('active');
+        } else {
+            btnAge.classList.remove('active');
+            btnUp.classList.add('active');
+        }
+    }
+    render();
+}
 let pendingDelId = null;
 let pendingImportEvents = null;
 let liveTimer = null;
@@ -3245,6 +3367,53 @@ function syncToAndroidWidget() {
     }
 }
 
+function migrateFamilyRoster() {
+    try {
+        const migratedKey = 'events_family_roster_v160_migrated';
+        if (localStorage.getItem(migratedKey)) return;
+
+        // 1. Purge legacy dummy samples
+        const dummyNames = [
+            "mom's birthday",
+            "alex johnson",
+            "sarah miller",
+            "team meeting",
+            "project deadline",
+            "beach holiday",
+            "doctor reminder"
+        ];
+        events = events.filter(function(e) {
+            const n = (e.name || '').trim().toLowerCase();
+            return !dummyNames.includes(n);
+        });
+
+        // 2. Deduplicating insert of official family members
+        FAMILY_ROSTER.forEach(function(member, idx) {
+            const exists = events.some(function(ex) {
+                const sameName = (ex.name || '').trim().toLowerCase() === member.name.toLowerCase();
+                const exDate = ex.birthDate || ex.date;
+                const memDate = member.birthDate || member.date;
+                return sameName || (exDate === memDate && sameName);
+            });
+            if (!exists) {
+                events.push({
+                    id: uid(),
+                    name: member.name,
+                    birthDate: member.birthDate,
+                    date: member.date,
+                    category: member.category,
+                    relationship: member.relationship,
+                    notes: member.notes,
+                    createdAt: Date.now() + idx
+                });
+            }
+        });
+
+        save();
+        localStorage.setItem(migratedKey, '1');
+    } catch (_) {}
+}
+
 function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -3257,6 +3426,7 @@ function load() {
         events = SAMPLES.map((e,i) => ({ ...e, id: uid(), createdAt: Date.now()+i }));
         save();
     }
+    migrateFamilyRoster();
     syncToAndroidWidget();
 }
 
@@ -3556,61 +3726,78 @@ function renderBirthdaysView(allBdays) {
         if (searchBadge) searchBadge.style.display = 'none';
     }
 
-    /* Hero Spotlight Component */
     const heroSpot = document.getElementById('hero-spotlight');
-    if (heroSpot) {
-        if (bdays.length > 0) {
-            heroSpot.style.display = 'block';
-            heroSpot.innerHTML = bdayHeroHtml(bdays[0]);
-        } else {
-            heroSpot.style.display = 'none';
-            heroSpot.innerHTML = '';
-        }
-    }
-
-    /* Active section with Horizon Chunking */
     const aList = document.getElementById('active-list');
     const aHdr  = document.getElementById('active-hdr');
 
-    if (bdays.length) {
-        if (bdays.length === 1) {
-            aHdr.textContent = (searchQuery.trim() ? 'Matching Birthday (1)' : 'Upcoming Birthday (1)');
-            aList.innerHTML = '<div style="text-align:center;padding:12px 10px 8px;font-size:12px;color:var(--text-3);">🎂 Nearest birthday spotlighted above. Tap + to add more!</div>';
+    if (bdaySortMode === 'age') {
+        // Eldest to Youngest (earliest birth date first)
+        bdays.sort((a, b) => new Date(a.birthDate || a.date) - new Date(b.birthDate || b.date));
+        if (heroSpot) {
+            heroSpot.style.display = 'none';
+            heroSpot.innerHTML = '';
+        }
+        if (bdays.length) {
+            aHdr.textContent = (searchQuery.trim() ? 'Matching Family — ' : 'Family by Age (Eldest to Youngest) — ') + bdays.length;
+            aList.innerHTML = bdays.map(bdayCardHtml).join('');
         } else {
-            const remaining = bdays.slice(1);
-            const thisWeek  = remaining.filter(e => e._daysLeft <= 7);
-            const thisMonth = remaining.filter(e => e._daysLeft > 7 && e._daysLeft <= 30);
-            const later     = remaining.filter(e => e._daysLeft > 30);
-
-            let listHtml = '';
-            if (thisWeek.length) {
-                listHtml += '<div class="horizon-group">'
-                    + '<div class="horizon-hdr"><span class="horizon-icon">🔥</span><span class="horizon-title">This Week</span><span class="horizon-count">' + thisWeek.length + '</span></div>'
-                    + thisWeek.map(bdayCardHtml).join('')
-                    + '</div>';
-            }
-            if (thisMonth.length) {
-                listHtml += '<div class="horizon-group">'
-                    + '<div class="horizon-hdr"><span class="horizon-icon">🗓️</span><span class="horizon-title">This Month</span><span class="horizon-count">' + thisMonth.length + '</span></div>'
-                    + thisMonth.map(bdayCardHtml).join('')
-                    + '</div>';
-            }
-            if (later.length) {
-                listHtml += '<div class="horizon-group">'
-                    + '<div class="horizon-hdr"><span class="horizon-icon">⏳</span><span class="horizon-title">Later On</span><span class="horizon-count">' + later.length + '</span></div>'
-                    + later.map(bdayCardHtml).join('')
-                    + '</div>';
-            }
-
-            aHdr.textContent = (searchQuery.trim() ? 'Matching Birthdays — ' : 'Upcoming Birthdays — ') + bdays.length;
-            aList.innerHTML = listHtml;
+            aHdr.textContent = '';
+            aList.innerHTML = '<div class="empty"><span class="empty-icon">🎂</span><p>No birthdays found.</p></div>';
         }
     } else {
-        aHdr.textContent = '';
-        if (searchQuery.trim()) {
-            aList.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span><p>No birthdays match "<strong>' + esc(searchQuery) + '</strong>".<br><button type="button" onclick="clearSearch()" class="toast-btn" style="margin-top:12px;padding:6px 14px;border-radius:12px;cursor:pointer;">Clear Search</button></p></div>';
+        // Upcoming mode (default) - sorted by _daysLeft
+        bdays.sort((a, b) => a._daysLeft - b._daysLeft || a.name.localeCompare(b.name));
+
+        if (heroSpot) {
+            if (bdays.length > 0) {
+                heroSpot.style.display = 'block';
+                heroSpot.innerHTML = bdayHeroHtml(bdays[0]);
+            } else {
+                heroSpot.style.display = 'none';
+                heroSpot.innerHTML = '';
+            }
+        }
+
+        if (bdays.length) {
+            if (bdays.length === 1) {
+                aHdr.textContent = (searchQuery.trim() ? 'Matching Birthday (1)' : 'Upcoming Birthday (1)');
+                aList.innerHTML = '<div style="text-align:center;padding:12px 10px 8px;font-size:12px;color:var(--text-3);">🎂 Nearest birthday spotlighted above. Tap + to add more!</div>';
+            } else {
+                const remaining = bdays.slice(1);
+                const thisWeek  = remaining.filter(e => e._daysLeft <= 7);
+                const thisMonth = remaining.filter(e => e._daysLeft > 7 && e._daysLeft <= 30);
+                const later     = remaining.filter(e => e._daysLeft > 30);
+
+                let listHtml = '';
+                if (thisWeek.length) {
+                    listHtml += '<div class="horizon-group">'
+                        + '<div class="horizon-hdr"><span class="horizon-icon">🔥</span><span class="horizon-title">This Week</span><span class="horizon-count">' + thisWeek.length + '</span></div>'
+                        + thisWeek.map(bdayCardHtml).join('')
+                        + '</div>';
+                }
+                if (thisMonth.length) {
+                    listHtml += '<div class="horizon-group">'
+                        + '<div class="horizon-hdr"><span class="horizon-icon">🗓️</span><span class="horizon-title">This Month</span><span class="horizon-count">' + thisMonth.length + '</span></div>'
+                        + thisMonth.map(bdayCardHtml).join('')
+                        + '</div>';
+                }
+                if (later.length) {
+                    listHtml += '<div class="horizon-group">'
+                        + '<div class="horizon-hdr"><span class="horizon-icon">⏳</span><span class="horizon-title">Later On</span><span class="horizon-count">' + later.length + '</span></div>'
+                        + later.map(bdayCardHtml).join('')
+                        + '</div>';
+                }
+
+                aHdr.textContent = (searchQuery.trim() ? 'Matching Birthdays — ' : 'Upcoming Birthdays — ') + bdays.length;
+                aList.innerHTML = listHtml;
+            }
         } else {
-            aList.innerHTML = '<div class="empty"><span class="empty-icon">🎂</span><p>No birthdays tracked yet.<br>Tap <strong>+</strong> to add your family & friends!</p></div>';
+            aHdr.textContent = '';
+            if (searchQuery.trim()) {
+                aList.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span><p>No birthdays match "<strong>' + esc(searchQuery) + '</strong>".<br><button type="button" onclick="clearSearch()" class="toast-btn" style="margin-top:12px;padding:6px 14px;border-radius:12px;cursor:pointer;">Clear Search</button></p></div>';
+            } else {
+                aList.innerHTML = '<div class="empty"><span class="empty-icon">🎂</span><p>No birthdays tracked yet.<br>Tap <strong>+</strong> to add your family & friends!</p></div>';
+            }
         }
     }
 
@@ -3752,14 +3939,53 @@ function render() {
     const bdayFilterBar = document.getElementById('bday-filter-bar');
     const mainHeading = document.getElementById('app-main-heading');
 
+    const pulseBar = document.getElementById('family-pulse-bar');
+    const sortBar = document.getElementById('bday-sort-bar');
+
     if (currentViewTab === 'birthdays') {
         if (catFilterBar) catFilterBar.style.display = 'none';
         if (bdayFilterBar) bdayFilterBar.style.display = 'flex';
         if (mainHeading) mainHeading.textContent = '🎉 Birthdays';
+        if (pulseBar) {
+            pulseBar.style.display = 'flex';
+            const famCount = allBdays.filter(e => (e.relationship || 'family') === 'family').length;
+            const pulseCountEl = document.getElementById('family-pulse-count');
+            if (pulseCountEl) pulseCountEl.textContent = famCount + ' Family Members';
+
+            const pulseNextEl = document.getElementById('family-pulse-next');
+            if (pulseNextEl && allBdays.length > 0) {
+                const nextB = allBdays[0];
+                const nextDays = nextB._bMetrics ? nextB._bMetrics.daysLeft : daysLeft(nextB.birthDate || nextB.date);
+                const turning = nextB._bMetrics ? nextB._bMetrics.turningAge : '';
+                if (nextDays === 0) {
+                    pulseNextEl.textContent = '🎉 TODAY: ' + esc(nextB.name) + '!';
+                } else if (nextDays === 1) {
+                    pulseNextEl.textContent = '🎂 Next: ' + esc(nextB.name) + ' Tomorrow (Turning ' + turning + ')';
+                } else {
+                    pulseNextEl.textContent = '🎂 Next: ' + esc(nextB.name) + ' in ' + nextDays + 'd (Turning ' + turning + ')';
+                }
+            }
+        }
+        if (sortBar) {
+            sortBar.style.display = 'flex';
+            const btnUp = document.getElementById('sort-btn-upcoming');
+            const btnAge = document.getElementById('sort-btn-age');
+            if (btnUp && btnAge) {
+                if (bdaySortMode === 'age') {
+                    btnUp.classList.remove('active');
+                    btnAge.classList.add('active');
+                } else {
+                    btnAge.classList.remove('active');
+                    btnUp.classList.add('active');
+                }
+            }
+        }
         renderBirthdaysView(allBdays);
     } else {
         if (catFilterBar) catFilterBar.style.display = 'flex';
         if (bdayFilterBar) bdayFilterBar.style.display = 'none';
+        if (pulseBar) pulseBar.style.display = 'none';
+        if (sortBar) sortBar.style.display = 'none';
         if (mainHeading) mainHeading.textContent = '📅 Events';
         renderEventsView();
     }
@@ -4370,7 +4596,7 @@ render();
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.5.0";
+const CURRENT_APP_VERSION = "1.6.0";
 
 // Display current version in footer on load
 const versionBadge = document.getElementById('app-version-display');

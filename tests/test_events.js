@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.5.0">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.5.0">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.5.0">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.0">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.0">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.6.0">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -83,7 +83,13 @@ const requiredIds = [
     'bday-rel-wrap',
     'bday-gifts-wrap',
     'detail-bday-box',
-    'detail-btn-whatsapp'
+    'detail-btn-whatsapp',
+    'family-pulse-bar',
+    'family-pulse-count',
+    'family-pulse-next',
+    'bday-sort-bar',
+    'sort-btn-upcoming',
+    'sort-btn-age'
 ];
 
 requiredIds.forEach(id => {
@@ -788,9 +794,85 @@ assert(medBdayHtml.includes('days'), 'bdayCardHtml must display completed days')
 // Verify CSS contain-intrinsic-size and min-height in htmlContent for medium sizing
 assert(htmlContent.includes('contain-intrinsic-size: 0 88px;'), 'Missing medium contain-intrinsic-size 88px');
 assert(htmlContent.includes('min-height: 84px;'), 'Missing card min-height 84px');
-assert(htmlContent.includes('CURRENT_APP_VERSION = "1.5.0"'), 'Version must be 1.5.0 in script');
+assert(htmlContent.includes('CURRENT_APP_VERSION = "1.6.0"'), 'Version must be 1.6.0 in script');
 
 console.log('  [PASS] Medium card layout, exact age breakdown, and smart horizon countdown verified.');
 
-console.log('\n=== ALL 27 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+// 28. Test Authentic Family Roster (13 Members), Deduplicating Auto-Migration, Dual Sorting & Pulse Bar
+console.log('\nTest 28: Authentic Family Roster, Deduplicating Auto-Migration, Dual Sorting & Pulse Bar...');
+
+// Check FAMILY_ROSTER array
+assert(Array.isArray(sandbox.FAMILY_ROSTER), 'FAMILY_ROSTER must be an array');
+assert.strictEqual(sandbox.FAMILY_ROSTER.length, 13, `FAMILY_ROSTER must contain 13 members, got ${sandbox.FAMILY_ROSTER.length}`);
+
+const expectedNames = [
+    'Siraj', 'Rasida', 'Munira', 'Ahamed', 'Mahmood', 'Shemil', 'Aamena',
+    'Hamid', 'Amina', 'Saqlain', 'Anas', 'Hamza', 'Yusuf'
+];
+expectedNames.forEach(name => {
+    const found = sandbox.FAMILY_ROSTER.some(m => m.name === name);
+    assert(found, `Missing expected family member: ${name}`);
+});
+
+// Verify family_birthdays.json file exists and is valid
+const famJsonPath = path.join(projectRoot, 'family_birthdays.json');
+assert(fs.existsSync(famJsonPath), 'family_birthdays.json must exist in repository root');
+const famJsonData = JSON.parse(fs.readFileSync(famJsonPath, 'utf8'));
+assert.strictEqual(famJsonData.length, 13, 'family_birthdays.json must contain 13 records');
+
+// Test Deduplicating Migration Simulation:
+// Start with a mock state containing dummy events + manually entered Amina and Hamid
+sandbox.localStorage.removeItem('events_family_roster_v160_migrated');
+sandbox.events = [
+    { id: 'dummy-alex', name: 'Alex Johnson', birthDate: '1995-03-15', date: '1995-03-15', category: 'birthday' },
+    { id: 'dummy-meeting', name: 'Team Meeting', date: '2026-11-01', category: 'meeting' },
+    { id: 'user-amina', name: 'Amina', birthDate: '2003-09-17', date: '2003-09-17', category: 'birthday', relationship: 'family', customNote: 'Manually entered' },
+    { id: 'user-hamid', name: 'Hamid', birthDate: '2002-11-23', date: '2002-11-23', category: 'birthday', relationship: 'family', customNote: 'Manually entered' }
+];
+
+sandbox.migrateFamilyRoster();
+
+// Assert dummy events were purged
+assert(!sandbox.events.some(e => e.name === 'Alex Johnson'), 'Dummy event Alex Johnson must be purged');
+assert(!sandbox.events.some(e => e.name === 'Team Meeting'), 'Dummy event Team Meeting must be purged');
+
+// Assert manually entered Amina and Hamid were preserved with their original properties
+const aminaEvt = sandbox.events.find(e => e.name === 'Amina');
+assert(aminaEvt && aminaEvt.id === 'user-amina', 'User manually entered Amina must be preserved with custom ID');
+const hamidEvt = sandbox.events.find(e => e.name === 'Hamid');
+assert(hamidEvt && hamidEvt.id === 'user-hamid', 'User manually entered Hamid must be preserved with custom ID');
+
+// Assert total count is exactly 13 with all family members present
+assert.strictEqual(sandbox.events.length, 13, `Expected 13 family members after migration, got ${sandbox.events.length}`);
+expectedNames.forEach(name => {
+    const matches = sandbox.events.filter(e => e.name === name);
+    assert.strictEqual(matches.length, 1, `Expected exactly 1 instance of ${name}, got ${matches.length}`);
+});
+
+// Test Sorting Modes:
+// 1. Upcoming Mode (default)
+sandbox.setBdaySortMode('upcoming');
+assert.strictEqual(sandbox.bdaySortMode, 'upcoming');
+sandbox.switchViewTab('birthdays');
+const heroSpotHtml = mockElements['hero-spotlight'].innerHTML;
+assert(heroSpotHtml.includes('Hamza'), 'Upcoming sort hero spotlight must feature Hamza (nearest birthday in 7 days)');
+
+// 2. Eldest First Mode
+sandbox.setBdaySortMode('age');
+assert.strictEqual(sandbox.bdaySortMode, 'age');
+const activeListHtml = mockElements['active-list'].innerHTML;
+const sirajIdx = activeListHtml.indexOf('Siraj');
+const yusufIdx = activeListHtml.indexOf('Yusuf');
+assert(sirajIdx !== -1, 'Siraj must be present in Eldest First list');
+assert(yusufIdx !== -1, 'Yusuf must be present in Eldest First list');
+assert(sirajIdx < yusufIdx, `Siraj (born 1966, index ${sirajIdx}) must appear before Yusuf (born 2023, index ${yusufIdx}) in Eldest First mode`);
+
+// Test Pulse Bar elements
+assert(htmlContent.includes('id="family-pulse-bar"'), 'Missing family-pulse-bar in HTML');
+assert(htmlContent.includes('id="family-pulse-count"'), 'Missing family-pulse-count in HTML');
+assert(htmlContent.includes('id="family-pulse-next"'), 'Missing family-pulse-next in HTML');
+
+console.log('  [PASS] Authentic family roster, deduplicating migration, dual sorting & pulse bar verified.');
+
+console.log('\n=== ALL 28 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
 process.exit(0);
