@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.2.0">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.2.0">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.2.0">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.3.0">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.3.0">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.3.0">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -69,7 +69,21 @@ const requiredIds = [
     'dock-btn-more',
     'detail-sheet',
     'more-sheet',
-    'category-chips-selector'
+    'category-chips-selector',
+    'view-switcher',
+    'tab-birthdays',
+    'tab-events',
+    'bday-badge-count',
+    'events-badge-count',
+    'bday-filter-bar',
+    'bday-cnt-all',
+    'bday-cnt-family',
+    'bday-decade-wrap',
+    'bday-age-preview',
+    'bday-rel-wrap',
+    'bday-gifts-wrap',
+    'detail-bday-box',
+    'detail-btn-whatsapp'
 ];
 
 requiredIds.forEach(id => {
@@ -112,6 +126,10 @@ function createMockElement(tag, id = '') {
         value: '',
         dataset: {},
         listeners: {},
+        attributes: {},
+        setAttribute(name, val) { this.attributes[name] = String(val); },
+        getAttribute(name) { return this.attributes[name] !== undefined ? this.attributes[name] : null; },
+        removeAttribute(name) { delete this.attributes[name]; },
         addEventListener(event, fn) {
             if (!this.listeners[event]) this.listeners[event] = [];
             this.listeners[event].push(fn);
@@ -299,11 +317,16 @@ assert(sandbox.events.length > 0, 'Initial events not loaded');
 console.log(`  [PASS] Default CATS includes General: ${JSON.stringify(sandbox.CATS.general)}`);
 console.log(`  [PASS] Initial load loaded ${sandbox.events.length} events.`);
 
-// 6. Test openModal default category 'general'
-console.log('\nTest 6: openModal default category...');
+// 6. Test openModal default category in events and birthdays modes
+console.log('\nTest 6: openModal default category in events and birthdays modes...');
+sandbox.switchViewTab('events');
 sandbox.openModal(null);
-assert.strictEqual(sandbox.document.getElementById('f-cat').value, 'general', 'Default category in openModal should be general');
-console.log('  [PASS] openModal correctly defaults f-cat to "general".');
+assert.strictEqual(sandbox.document.getElementById('f-cat').value, 'general', 'Default category in events view openModal should be general');
+sandbox.switchViewTab('birthdays');
+sandbox.openModal(null);
+assert.strictEqual(sandbox.document.getElementById('f-cat').value, 'birthday', 'Default category in birthdays view openModal should be birthday');
+sandbox.switchViewTab('events');
+console.log('  [PASS] openModal correctly defaults f-cat to "general" in events mode and "birthday" in birthday mode.');
 
 // 7. Test Card HTML structure for swipe-to-delete
 console.log('\nTest 7: cardHtml swipe structure...');
@@ -517,6 +540,7 @@ sandbox.events = [
     { id: 'h3', name: 'This Month Event', date: d3, category: 'birthday', notes: '' },
     { id: 'h4', name: 'Later On Event', date: d4, category: 'holiday', notes: '' }
 ];
+sandbox.switchViewTab('events');
 sandbox.render();
 
 assert(mockElements['hero-spotlight'].innerHTML.includes('Nearest Event'), 'hero-spotlight must contain the nearest upcoming event');
@@ -583,5 +607,99 @@ assert.strictEqual(mockElements['f-cat'].value, 'meeting', 'Zoom conference shou
 
 console.log('  [PASS] Keyword auto-categorization and synchronized tactile category chips verified.');
 
-console.log('\n=== ALL 20 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+// 21. Test Exact Age Computation (Years, Months, Days, Total Days Lived)
+console.log('\nTest 21: Exact Age Computation & Telemetry...');
+assert(typeof sandbox.computeBirthdayMetrics === 'function', 'computeBirthdayMetrics must exist');
+const metrics1 = sandbox.computeBirthdayMetrics('1995-03-15');
+assert(typeof metrics1.currentAgeYears === 'number' && metrics1.currentAgeYears >= 30, 'Completed age should be >= 30 for 1995 birthdate');
+assert(typeof metrics1.currentAgeMonths === 'number' && metrics1.currentAgeMonths >= 0 && metrics1.currentAgeMonths < 12, 'Age months must be 0-11');
+assert(typeof metrics1.currentAgeDays === 'number' && metrics1.currentAgeDays >= 0 && metrics1.currentAgeDays <= 31, 'Age days must be 0-31');
+assert(typeof metrics1.totalDaysLived === 'number' && metrics1.totalDaysLived > 10000, 'Total days lived should be > 10,000 for 1995 birthdate');
+assert.strictEqual(metrics1.turningAge, metrics1.currentAgeYears + (metrics1.isToday ? 0 : 1), 'Turning age must match completed years + 1');
+console.log(`  [PASS] Exact age computed: ${metrics1.currentAgeYears} yrs, ${metrics1.currentAgeMonths}m, ${metrics1.currentAgeDays}d (${metrics1.totalDaysLived} days lived). Turning: ${metrics1.turningAge}.`);
+
+// 22. Test Perpetual Birthday Rollover (Never Archived)
+console.log('\nTest 22: Perpetual Birthday Rollover Logic...');
+const curYear = new Date().getFullYear();
+// Create a birthday that was yesterday
+const yesterday = new Date(Date.now() - 86400000);
+const yMonth = String(yesterday.getMonth() + 1).padStart(2, '0');
+const yDay = String(yesterday.getDate()).padStart(2, '0');
+const pastBday = (curYear - 25) + '-' + yMonth + '-' + yDay;
+
+const mRollover = sandbox.computeBirthdayMetrics(pastBday);
+assert(mRollover.daysLeft > 300, 'Past birthday this year must perpetually roll over to next year with > 300 days');
+assert.strictEqual(mRollover.isToday, false, 'Past birthday is not today');
+assert(mRollover.nextDateStr.startsWith(String(curYear + 1)), 'Next birthday date must be in next calendar year');
+
+// Test birthday today
+const todayBday = (curYear - 20) + '-' + String(new Date().getMonth() + 1).padStart(2, '0') + '-' + String(new Date().getDate()).padStart(2, '0');
+const mToday = sandbox.computeBirthdayMetrics(todayBday);
+assert.strictEqual(mToday.isToday, true, 'Birthday today must have isToday = true');
+assert.strictEqual(mToday.daysLeft, 0, 'Birthday today must have daysLeft = 0');
+assert.strictEqual(mToday.turningAge, 20, 'Birthday today must turn exact age 20');
+console.log('  [PASS] Perpetual annual rollover and day-of celebration detection verified.');
+
+// 23. Test Sorting Invariant in Birthday View (Least Days Remaining)
+console.log('\nTest 23: Birthday View Queue & Sorting Invariant...');
+const b1Today = (curYear - 30) + '-' + String(new Date().getMonth() + 1).padStart(2, '0') + '-' + String(new Date().getDate()).padStart(2, '0');
+const fut5 = new Date(Date.now() + 5 * 86400000);
+const b2Fut = (curYear - 25) + '-' + String(fut5.getMonth() + 1).padStart(2, '0') + '-' + String(fut5.getDate()).padStart(2, '0');
+const fut40 = new Date(Date.now() + 40 * 86400000);
+const b3Fut = (curYear - 40) + '-' + String(fut40.getMonth() + 1).padStart(2, '0') + '-' + String(fut40.getDate()).padStart(2, '0');
+
+sandbox.events = [
+    { id: 'b-fut', name: 'Friend in 5d', birthDate: b2Fut, date: b2Fut, category: 'birthday', relationship: 'friend' },
+    { id: 'b-far', name: 'Far Birthday in 40d', birthDate: b3Fut, date: b3Fut, category: 'birthday', relationship: 'work' },
+    { id: 'b-now', name: 'Celebration Today', birthDate: b1Today, date: b1Today, category: 'birthday', relationship: 'family' }
+];
+
+sandbox.switchViewTab('birthdays');
+sandbox.render();
+
+// Nearest birthday spotlighted (Celebration Today)
+assert(mockElements['hero-spotlight'].innerHTML.includes('Celebration Today'), 'hero-spotlight must contain the nearest upcoming birthday (Today)');
+assert(mockElements['hero-spotlight'].innerHTML.includes('TODAY'), 'Hero spotlight should render TODAY label');
+
+// Remaining birthdays in active-list
+const bdayListHtml = mockElements['active-list'].innerHTML;
+assert(bdayListHtml.includes('Friend in 5d'), 'Active list must contain 5d upcoming birthday');
+assert(bdayListHtml.includes('Far Birthday in 40d'), 'Active list must contain 40d upcoming birthday');
+// In birthday mode, archive wrap should be hidden
+assert.strictEqual(mockElements['archive-wrap'].style.display, 'none', 'Archive wrap must be hidden in birthday mode');
+console.log('  [PASS] Nearest birthday spotlighted, queue sorted ascending, and zero-archive policy verified.');
+
+// 24. Test Western Zodiac Sign & Landmark Milestone Badges
+console.log('\nTest 24: Western Zodiac Sign & Landmark Milestone Badges...');
+assert(typeof sandbox.getZodiacSign === 'function', 'getZodiacSign function must exist');
+assert.strictEqual(sandbox.getZodiacSign(3, 25).name, 'Aries', 'March 25 must be Aries');
+assert.strictEqual(sandbox.getZodiacSign(8, 15).name, 'Leo', 'August 15 must be Leo');
+assert.strictEqual(sandbox.getZodiacSign(11, 10).name, 'Scorpio', 'November 10 must be Scorpio');
+
+assert(typeof sandbox.getMilestoneLabel === 'function', 'getMilestoneLabel function must exist');
+assert(sandbox.getMilestoneLabel(1).includes('1st Birthday'), 'Age 1 must be 1st Birthday');
+assert(sandbox.getMilestoneLabel(18).includes('18th Milestone'), 'Age 18 must be 18th Milestone');
+assert(sandbox.getMilestoneLabel(21).includes('21st Milestone'), 'Age 21 must be 21st Milestone');
+assert(sandbox.getMilestoneLabel(30).includes('30th Milestone'), 'Age 30 must be 30th Milestone');
+assert(sandbox.getMilestoneLabel(50).includes('Golden Jubilee'), 'Age 50 must be Golden Jubilee');
+console.log('  [PASS] Zodiac signs and milestone ages correctly mapped.');
+
+// 25. Test 1-Tap WhatsApp Wish Link & Live Age Form Preview
+console.log('\nTest 25: WhatsApp Greeting Link & Live Age Form Preview...');
+assert(typeof sandbox.buildWhatsAppWishLink === 'function', 'buildWhatsAppWishLink function must exist');
+const waLink = sandbox.buildWhatsAppWishLink('Mom', 60, 'family');
+assert(waLink.startsWith('https://wa.me/?text='), 'WhatsApp link must use wa.me protocol');
+assert(waLink.includes('Mom') && waLink.includes('60th'), 'WhatsApp message must include name and 60th milestone');
+
+assert(typeof sandbox.updateBdayFormPreview === 'function', 'updateBdayFormPreview must exist');
+sandbox.document.getElementById('f-cat').value = 'birthday';
+sandbox.document.getElementById('f-date').value = '1990-05-20';
+sandbox.updateBdayFormPreview();
+const previewHtml = mockElements['bday-age-preview'].innerHTML;
+assert(previewHtml.includes('Age Today'), 'Preview must show Age Today');
+assert(previewHtml.includes('Turning'), 'Preview must show Turning age');
+assert.strictEqual(mockElements['bday-age-preview'].style.display, 'block', 'Preview box must be displayed');
+console.log('  [PASS] WhatsApp greeting URL and dynamic live age preview verified.');
+
+console.log('\n=== ALL 25 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
 process.exit(0);

@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "name": "Events Countdown",
-  "updated": "2026-10-23",
-  "changelog": "v1.2.0: Deep redesign with Hero Countdown Spotlight, Miller Law time horizon grouping (This Week, This Month, Later On), ergonomic Bottom Thumb Dock with elevated FAB, Quick-View detail sheet with 1-tap iCalendar (.ics) export, and smart auto-categorization."
+  "updated": "2026-10-24",
+  "changelog": "v1.3.0: Added dedicated Perpetual Birthday Tracker & Age Countdown Engine. Enter birth date once to track exact completed age (years, months, days, total days lived), turning milestone age, and days remaining. Features perpetual annual rollover with zero archival, sorting by nearest upcoming birthday, landmark milestone badges, Western Zodiac calculation, 1-tap WhatsApp birthday wishes, and top segment switcher."
 }

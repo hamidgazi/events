@@ -102,4 +102,14 @@ This document records architectural decisions, critical mobile quirks, operating
 * **Finding**: Dropdown selects (`<select>`) have high interaction friction on touchscreens, requiring 3-4 taps to open an OS picker and choose an option.
 * **Solution**: Replace standard dropdowns with horizontal scrollable category chip pills and bind an `input` listener to the title field. As the user types (e.g. *"Doctor checkup"*, *"Mom birthday"*), the app instantly auto-detects the matching category (`reminder`, `birthday`), highlights the corresponding chip, and displays a subtle `✨ Auto-detected Reminder` feedback badge.
 
+### 6. Perpetual Annual Rollover & Exact Age Telemetry (v1.3.0)
+* **Finding**: Traditional calendar events are linear—when an event passes its date, it moves to "Past / Archived" status (`daysLeft < 0`). Birthdays, however, are cyclical annual milestones: once a person's birthday finishes at midnight, they shouldn't disappear into an archive; their next celebration is in 365 days, and their turning age increments by +1. Furthermore, users enter birthdates in the past (e.g. 1990), which would immediately archive under standard event countdown logic.
+* **Solution**:
+  1. **Dynamic Perpetual Rollover**: When evaluating a birthday, calculate the target date in the current calendar year. If `targetDate < today`, dynamically set the next target date to `(currentYear + 1)`. Consequently, `daysLeft` is perpetually bounded in $[0, 365]$, meaning a birthday is NEVER archived or hidden.
+  2. **Exact Age Breakdown**: Deconstruct the calendar difference between birthdate and today into completed years, elapsed months, and residual days, alongside total lifetime days lived (`Math.floor((today - birthDate) / 86400000)`). Display both the forward-looking milestone ("Turning 35 in 14 days") and retroactive progress ("Currently 34 yrs, 11 mos, 16 days").
+  3. **Zero-Archive Invariant**: When in Birthday View (`currentViewTab === 'birthdays'`), hide the past/archive collapsible section (`archiveWrap.style.display = 'none'`) and maintain a strictly ascending queue ordered by least days remaining until the next celebration.
+  4. **RFC 5545 Recurrence**: Inject `RRULE:FREQ=YEARLY` into client-generated `.ics` blobs for birthdays, instructing device calendar daemons (Google/Apple Calendar) to perpetually re-notify every year.
+  5. **1-Tap WhatsApp Greetings**: Format celebratory deep-links using `https://wa.me/?text=...` with auto-tailored congratulatory copy including landmark milestone tags (e.g., *"Happy 60th Diamond Jubilee!"*).
+
+
 

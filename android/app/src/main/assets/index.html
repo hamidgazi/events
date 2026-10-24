@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#0d1117">
     <title>Events Countdown</title>
     <!-- Mobile Home Screen Icons & Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.2.0">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.2.0">
-    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.2.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.2.0">
-    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.2.0">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.2.0">
-    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.2.0">
-    <link rel="manifest" href="manifest.json?v=1.2.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.3.0">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.3.0">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.3.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.3.0">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.3.0">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.3.0">
+    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.3.0">
+    <link rel="manifest" href="manifest.json?v=1.3.0">
     <style>
         /* ============================================
            CSS VARIABLES (Deep OLED Glassmorphic)
@@ -215,6 +215,205 @@
             .hdr-btn-lbl { display: none; }
             .hdr-btn { padding: 5px 8px; font-size: 13px; }
         }
+
+        /* ============================================
+           VIEW SWITCHER (Birthdays vs All Events)
+        ============================================ */
+        .view-switcher-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 6px 0 10px;
+        }
+        .view-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3px;
+            gap: 4px;
+            width: 100%;
+            max-width: 380px;
+        }
+        .view-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-2);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+        .view-btn.active {
+            background: linear-gradient(135deg, rgba(255, 69, 58, 0.22), rgba(255, 159, 10, 0.22));
+            border-color: rgba(255, 159, 10, 0.45);
+            color: #ff9f0a;
+            box-shadow: 0 2px 10px rgba(255, 159, 10, 0.18);
+        }
+        .view-btn[data-tab="events"].active {
+            background: rgba(10, 132, 255, 0.22);
+            border-color: rgba(10, 132, 255, 0.45);
+            color: #58a6ff;
+            box-shadow: 0 2px 10px rgba(10, 132, 255, 0.18);
+        }
+        .view-count {
+            font-size: 10.5px;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 1px 7px;
+            border-radius: 10px;
+            color: var(--text-1);
+        }
+        .view-btn.active .view-count {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        /* ============================================
+           BIRTHDAY CARD & HERO STYLING
+        ============================================ */
+        .bday-card {
+            border-color: rgba(255, 159, 10, 0.22);
+        }
+        .bday-card:hover {
+            border-color: rgba(255, 159, 10, 0.45);
+        }
+        .bday-hero {
+            background: linear-gradient(145deg, rgba(32, 20, 10, 0.75), rgba(17, 22, 32, 0.9));
+            border: 1px solid rgba(255, 159, 10, 0.35);
+        }
+        .bday-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9f0a, #ff453a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 3px 12px rgba(255, 159, 10, 0.35);
+            flex-shrink: 0;
+        }
+        .bday-milestone-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10.5px;
+            font-weight: 800;
+            background: linear-gradient(90deg, rgba(255, 214, 10, 0.2), rgba(255, 159, 10, 0.2));
+            border: 1px solid rgba(255, 214, 10, 0.45);
+            color: #ffd60a;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+        .bday-turning-headline {
+            font-size: 19px;
+            font-weight: 900;
+            color: #f0f6fc;
+            letter-spacing: -0.4px;
+        }
+        .bday-exact-age {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+        .bday-zodiac-pill {
+            font-size: 10.5px;
+            font-weight: 700;
+            background: rgba(163, 113, 247, 0.15);
+            border: 1px solid rgba(163, 113, 247, 0.3);
+            color: #bc8cff;
+            padding: 1px 7px;
+            border-radius: 8px;
+        }
+        .bday-rel-pill {
+            font-size: 10.5px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 1px 7px;
+            border-radius: 8px;
+        }
+        .btn-whatsapp-wish {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
+            transition: transform 0.15s;
+        }
+        .btn-whatsapp-wish:active {
+            transform: scale(0.96);
+        }
+        .decade-scrubber {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 0 6px;
+            scrollbar-width: none;
+        }
+        .decade-scrubber::-webkit-scrollbar { display: none; }
+        .decade-btn {
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 4px 10px;
+            border-radius: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .decade-btn:hover, .decade-btn:active {
+            background: rgba(255, 159, 10, 0.18);
+            border-color: rgba(255, 159, 10, 0.4);
+            color: #ff9f0a;
+        }
+        .bday-preview-box {
+            background: rgba(255, 159, 10, 0.09);
+            border: 1px solid rgba(255, 159, 10, 0.28);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-1);
+            margin: 8px 0 4px;
+            display: none;
+            line-height: 1.4;
+        }
+        #bday-filter-bar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background: var(--bg);
+            border-bottom: 1px solid rgba(255,255,255,.04);
+        }
+        #bday-filter-bar::-webkit-scrollbar { display: none; }
 
         /* ============================================
            FILTER BAR
@@ -1429,7 +1628,7 @@
 <div id="updateBanner" style="display:none; align-items:center; justify-content:space-between; background:linear-gradient(90deg, #1f6feb, #238636); color:#fff; padding:10px 16px; font-size:13px; font-weight:600; position:sticky; top:0; z-index:999; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
     <div style="display:flex; align-items:center; gap:8px;">
         <span>✨</span>
-        <span>New update available! (<span id="txtNewVersion">v1.2.0</span>)</span>
+        <span>New update available! (<span id="txtNewVersion">v1.3.0</span>)</span>
     </div>
     <button id="btnReloadUpdate" style="background:#fff; color:#0d1117; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">Update Now</button>
 </div>
@@ -1438,10 +1637,22 @@
 <header>
     <div class="hdr-row">
         <div class="hdr-brand">
-            <h1>📅 Events</h1>
+            <h1 id="app-main-heading">🎉 Birthdays</h1>
             <span class="hdr-chip" id="hdr-chip">0 upcoming</span>
         </div>
         <div class="hdr-date" id="hdr-date"></div>
+    </div>
+
+    <!-- View Switcher: Birthdays vs All Events -->
+    <div class="view-switcher-wrap">
+        <div class="view-switcher" id="view-switcher" role="tablist">
+            <button type="button" class="view-btn active" id="tab-birthdays" data-tab="birthdays" role="tab" aria-selected="true" onclick="switchViewTab('birthdays')">
+                <span>🎉 Birthdays</span> <span class="view-count" id="bday-badge-count">0</span>
+            </button>
+            <button type="button" class="view-btn" id="tab-events" data-tab="events" role="tab" aria-selected="false" onclick="switchViewTab('events')">
+                <span>📋 All Events</span> <span class="view-count" id="events-badge-count">0</span>
+            </button>
+        </div>
     </div>
 
     <!-- Real-time Live Search Bar -->
@@ -1467,6 +1678,15 @@
     <button class="pill" data-cat="other">📌 Other <span class="pill-count" id="cnt-other">0</span></button>
 </div>
 
+<!-- ===== BIRTHDAY RELATIONSHIP FILTER BAR ===== -->
+<div id="bday-filter-bar" style="display:none">
+    <button class="pill active" data-rel="all" onclick="setBdayRelFilter('all')">All Birthdays <span class="pill-count" id="bday-cnt-all">0</span></button>
+    <button class="pill" data-rel="family" onclick="setBdayRelFilter('family')">👨‍👩‍👧 Family <span class="pill-count" id="bday-cnt-family">0</span></button>
+    <button class="pill" data-rel="friend" onclick="setBdayRelFilter('friend')">🤝 Friends <span class="pill-count" id="bday-cnt-friend">0</span></button>
+    <button class="pill" data-rel="work" onclick="setBdayRelFilter('work')">💼 Work <span class="pill-count" id="bday-cnt-work">0</span></button>
+    <button class="pill" data-rel="vip" onclick="setBdayRelFilter('vip')">⭐ VIP <span class="pill-count" id="bday-cnt-vip">0</span></button>
+</div>
+
 <!-- ===== MAIN ===== -->
 <main>
     <!-- Hero Spotlight for Nearest Urgent Event -->
@@ -1487,7 +1707,7 @@
 <!-- ===== FOOTER (VERSION & UPDATE STATUS) ===== -->
 <footer class="app-footer">
     <div class="footer-version-row">
-        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.2.0</span></span>
+        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.3.0</span></span>
         <button type="button" id="btn-manual-update-check" class="btn-check-update">🔄 Check for Updates</button>
     </div>
     <div class="footer-status-text" id="footer-status-text">App is up to date • 100% Offline PWA</div>
@@ -1522,14 +1742,27 @@
         <input type="hidden" id="f-id">
 
         <div class="fg">
-            <label for="f-name">Event Name <span style="color:var(--c-today)">*</span></label>
+            <label for="f-name" id="lbl-f-name">Event Name <span style="color:var(--c-today)">*</span></label>
             <input id="f-name" type="text" placeholder="e.g. Mom's Birthday, Team Review" maxlength="80" required>
         </div>
 
         <div class="fg">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                <label for="f-date" style="margin-bottom:0;">Date <span style="color:var(--c-today)">*</span></label>
-                <span style="font-size:11px; color:var(--text-3);">Quick Presets</span>
+                <label for="f-date" id="lbl-f-date" style="margin-bottom:0;">Date <span style="color:var(--c-today)">*</span></label>
+                <span id="quick-presets-lbl" style="font-size:11px; color:var(--text-3);">Quick Presets</span>
+            </div>
+            <div id="bday-decade-wrap" style="display:none; margin-bottom:6px;">
+                <div style="font-size:11px; color:var(--text-3); margin-bottom:4px;">Quick Birth Decade:</div>
+                <div class="decade-scrubber">
+                    <button type="button" class="decade-btn" onclick="jumpDecade(1950)">1950s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(1960)">1960s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(1970)">1970s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(1980)">1980s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(1990)">1990s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(2000)">2000s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(2010)">2010s</button>
+                    <button type="button" class="decade-btn" onclick="jumpDecade(2020)">2020s</button>
+                </div>
             </div>
             <div class="quick-chips-row" id="quick-date-presets">
                 <button type="button" class="q-chip" data-days="0" onclick="setQuickDate(0)">Today</button>
@@ -1538,7 +1771,24 @@
                 <button type="button" class="q-chip" data-days="7" onclick="setQuickDate(7)">Next Week</button>
                 <button type="button" class="q-chip" data-days="30" onclick="setQuickDate(30)">+1 Mo</button>
             </div>
-            <input id="f-date" type="date" required>
+            <input id="f-date" type="date" required oninput="updateBdayFormPreview()">
+            <div id="bday-age-preview" class="bday-preview-box"></div>
+        </div>
+
+        <div class="fg" id="bday-rel-wrap" style="display:none;">
+            <label>Relationship Tag</label>
+            <div class="category-chips-row" id="rel-chips-selector">
+                <button type="button" class="cat-chip active" data-rel="family" onclick="selectRelChip('family')">👨‍👩‍👧 Family</button>
+                <button type="button" class="cat-chip" data-rel="friend" onclick="selectRelChip('friend')">🤝 Friend</button>
+                <button type="button" class="cat-chip" data-rel="work" onclick="selectRelChip('work')">💼 Work</button>
+                <button type="button" class="cat-chip" data-rel="vip" onclick="selectRelChip('vip')">⭐ VIP</button>
+            </div>
+            <input type="hidden" id="f-rel" value="family">
+        </div>
+
+        <div class="fg" id="bday-gifts-wrap" style="display:none;">
+            <label for="f-gifts">Gift Ideas & Sizes <span style="font-weight:400;opacity:.6">(optional)</span></label>
+            <input type="text" id="f-gifts" placeholder="e.g. Watch, books, shirt size M, loves chocolates">
         </div>
 
         <div class="fg">
@@ -1589,6 +1839,22 @@
         </div>
         <h2 class="detail-title" id="detail-title">Event Title</h2>
         <div class="detail-date-row" id="detail-date">📅 Saturday, 25 October 2026</div>
+
+        <div id="detail-bday-box" style="display:none; background:rgba(255,159,10,0.09); border:1px solid rgba(255,159,10,0.3); border-radius:12px; padding:10px 14px; margin:10px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span id="detail-turning-title" style="font-size:16px; font-weight:800; color:#ffd60a;">Turning 32</span>
+                <span id="detail-zodiac-badge" class="bday-zodiac-pill">♈ Aries</span>
+            </div>
+            <div id="detail-exact-age-txt" style="font-size:12.5px; color:var(--text-1); margin-bottom:3px;">Currently 31 yrs, 7 mos, 9 days</div>
+            <div id="detail-lived-txt" style="font-size:11px; color:var(--text-3);">11,546 days lived</div>
+        </div>
+        <div id="detail-gifts-wrap" style="display:none; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:8px 12px; font-size:12px; color:var(--text-1); margin-bottom:10px;">
+            <strong style="color:#ffd60a;">🎁 Gift Ideas:</strong> <span id="detail-gifts-txt"></span>
+        </div>
+        <a id="detail-btn-whatsapp" class="btn-whatsapp-wish" style="display:none; width:100%; justify-content:center; padding:10px; margin-bottom:12px; font-size:13px; text-decoration:none;" target="_blank">
+            <span>📲</span> Send Birthday Wish on WhatsApp
+        </a>
+
         <div class="detail-timer-box" id="detail-timer-box">
             <div class="detail-timer-val" id="detail-timer-val">00d 00h 00m 00s</div>
             <div class="detail-timer-lbl">LIVE COUNTDOWN</div>
@@ -1653,7 +1919,7 @@
         </div>
         <input type="file" id="file-import" accept=".json,application/json" style="display:none">
         <div class="more-footer-info">
-            <span>📅 Events Countdown <span class="footer-version-badge">v1.2.0</span></span>
+            <span>📅 Events Countdown <span class="footer-version-badge">v1.3.0</span></span>
             <span style="opacity:0.6;">• 100% Offline PWA</span>
         </div>
         <button type="button" class="del-cancel" id="more-close" style="width:100%;margin-top:12px">Close</button>
@@ -1700,7 +1966,7 @@
         <div style="font-size:40px; margin-bottom:6px;">🚀</div>
         <h3 style="font-size:18px; margin-bottom:4px; color:#fff;">New Update Available!</h3>
         <p style="font-size:13.5px; color:var(--text-2); margin-bottom:14px;">
-            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.2.0</b> is ready for you.
+            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.3.0</b> is ready for you.
         </p>
         <div id="popup-changelog-box" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:12px; color:var(--text-1); text-align:left; margin-bottom:18px; line-height:1.45;">
             <b style="color:var(--text-3); font-size:11px; text-transform:uppercase;">What's New:</b><br>
@@ -1750,10 +2016,11 @@ function relDate(daysFromNow) {
 }
 
 const SAMPLES = [
-    { name: 'Welcome to Countdown', date: relDate(0),  category: 'general',  notes: 'Swipe left to delete! Tap card to expand details.' },
+    { name: "Mom's Birthday",       birthDate: '1968-11-06', date: '1968-11-06', category: 'birthday', relationship: 'family', giftIdeas: 'Floral scarf, perfume', notes: 'Call in the morning and send flowers' },
+    { name: 'Alex Johnson',         birthDate: '1995-03-15', date: '1995-03-15', category: 'birthday', relationship: 'friend', giftIdeas: 'Mechanical keyboard, espresso beans', notes: 'Party with college crew' },
+    { name: 'Sarah Miller',         birthDate: '2002-08-20', date: '2002-08-20', category: 'birthday', relationship: 'work',   giftIdeas: 'Tech books', notes: 'Design lead team card' },
     { name: 'Team Meeting',         date: relDate(1),  category: 'meeting',  notes: 'Q3 planning session — room 3B' },
     { name: 'Project Deadline',     date: relDate(3),  category: 'deadline', notes: 'Submit final report to manager' },
-    { name: "Mom's Birthday",       date: relDate(5),  category: 'birthday', notes: 'Get a cake and flowers' },
     { name: 'Beach Holiday',        date: relDate(10), category: 'holiday',  notes: 'Pack sunscreen and swimwear!' },
     { name: 'Doctor Reminder',      date: relDate(21), category: 'reminder', notes: 'Annual checkup — bring documents' },
 ];
@@ -1763,6 +2030,15 @@ const SAMPLES = [
 ===================================================== */
 let events = [];
 let activeFilter = 'all';
+let currentViewTab = (function() {
+    try {
+        const saved = localStorage.getItem('events_view_tab');
+        return saved === 'events' ? 'events' : 'birthdays';
+    } catch (_) {
+        return 'birthdays';
+    }
+})();
+let activeBdayRelFilter = 'all';
 let searchQuery = '';
 let pendingDelId = null;
 let pendingImportEvents = null;
@@ -2094,6 +2370,330 @@ function liveExactTicker(dateStr) {
     return String(h).padStart(2,'0') + 'h ' + String(m).padStart(2,'0') + 'm ' + String(s).padStart(2,'0') + 's';
 }
 
+/* =====================================================
+   PERPETUAL BIRTHDAY & AGE COMPUTATION ENGINE
+===================================================== */
+function parseDateParts(dateStr) {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    const parts = dateStr.trim().slice(0, 10).split('-');
+    if (parts.length !== 3) return null;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    return { y: y, m: m, d: d };
+}
+
+function computeBirthdayMetrics(birthDateStr) {
+    const p = parseDateParts(birthDateStr);
+    if (!p) {
+        return {
+            currentAgeYears: 0, currentAgeMonths: 0, currentAgeDays: 0,
+            totalDaysLived: 0, nextDateStr: birthDateStr || '',
+            daysLeft: 0, isToday: false, turningAge: 0,
+            zodiacGlyph: '✨', zodiacName: 'Birthday', milestoneLabel: ''
+        };
+    }
+
+    const today = new Date();
+    const ty = today.getFullYear();
+    const tm = today.getMonth() + 1; // 1-12
+    const td = today.getDate();
+
+    // 1. Current Completed Age (years, months, days)
+    let curYears = ty - p.y;
+    const isPastThisYear = (tm > p.m) || (tm === p.m && td > p.d);
+    const isToday = (tm === p.m && td === p.d);
+
+    if (tm < p.m || (tm === p.m && td < p.d)) {
+        curYears--;
+    }
+    if (curYears < 0) curYears = 0;
+
+    // Exact months & days calculation
+    let curMonths = tm - p.m;
+    let curDays = td - p.d;
+    if (curDays < 0) {
+        curMonths--;
+        const prevMonthDate = new Date(ty, tm - 1, 0);
+        curDays += prevMonthDate.getDate();
+    }
+    if (curMonths < 0) {
+        curMonths += 12;
+    }
+
+    // Total days lived
+    const birthMidnight = new Date(p.y, p.m - 1, p.d);
+    const todayMidnight = new Date(ty, tm - 1, td);
+    const totalDaysLived = Math.max(0, Math.round((todayMidnight - birthMidnight) / 864e5));
+
+    // 2. Next Birthday Date (Perpetual Rollover)
+    let nextYear = ty;
+    if (isPastThisYear) {
+        nextYear = ty + 1;
+    }
+
+    // Leap year handling for Feb 29
+    let nextDay = p.d;
+    let nextMonth = p.m;
+    if (p.m === 2 && p.d === 29) {
+        const isLeap = (nextYear % 4 === 0 && nextYear % 100 !== 0) || (nextYear % 400 === 0);
+        if (!isLeap) nextDay = 28;
+    }
+
+    const nextDateStr = nextYear + '-' + String(nextMonth).padStart(2, '0') + '-' + String(nextDay).padStart(2, '0');
+    const nextBdayMidnight = new Date(nextYear, nextMonth - 1, nextDay);
+    const daysLeftVal = Math.round((nextBdayMidnight - todayMidnight) / 864e5);
+
+    // Turning age on next birthday
+    const turningAge = isToday ? curYears : (curYears + 1);
+
+    // Zodiac sign
+    const zodiac = getZodiacSign(p.m, p.d);
+
+    // Landmark milestone
+    const milestoneLabel = getMilestoneLabel(turningAge);
+
+    return {
+        currentAgeYears: curYears,
+        currentAgeMonths: curMonths,
+        currentAgeDays: curDays,
+        totalDaysLived: totalDaysLived,
+        nextDateStr: nextDateStr,
+        daysLeft: Math.max(0, daysLeftVal),
+        isToday: isToday,
+        turningAge: turningAge,
+        zodiacGlyph: zodiac.glyph,
+        zodiacName: zodiac.name,
+        milestoneLabel: milestoneLabel
+    };
+}
+
+function getZodiacSign(m, d) {
+    if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return { glyph: '♈', name: 'Aries' };
+    if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return { glyph: '♉', name: 'Taurus' };
+    if ((m === 5 && d >= 21) || (m === 6 && d <= 20)) return { glyph: '♊', name: 'Gemini' };
+    if ((m === 6 && d >= 21) || (m === 7 && d <= 22)) return { glyph: '♋', name: 'Cancer' };
+    if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return { glyph: '♌', name: 'Leo' };
+    if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return { glyph: '♍', name: 'Virgo' };
+    if ((m === 9 && d >= 23) || (m === 10 && d <= 22)) return { glyph: '♎', name: 'Libra' };
+    if ((m === 10 && d >= 23) || (m === 11 && d <= 21)) return { glyph: '♏', name: 'Scorpio' };
+    if ((m === 11 && d >= 22) || (m === 12 && d <= 21)) return { glyph: '♐', name: 'Sagittarius' };
+    if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return { glyph: '♑', name: 'Capricorn' };
+    if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return { glyph: '♒', name: 'Aquarius' };
+    return { glyph: '♓', name: 'Pisces' };
+}
+
+function getMilestoneLabel(age) {
+    if (age === 1) return '🍼 1st Birthday';
+    if (age === 18) return '🎓 18th Milestone';
+    if (age === 21) return '🔑 21st Milestone';
+    if (age === 25) return '🥈 Silver Jubilee (25)';
+    if (age === 50) return '🥇 Golden Jubilee (50)';
+    if (age === 60) return '💎 Diamond 60th';
+    if (age === 75) return '👑 Platinum 75th';
+    if (age === 100) return '🌟 Century Milestone (100)';
+    if (age % 10 === 0 && age > 0) return '🌟 ' + age + 'th Milestone';
+    return '';
+}
+
+function buildWhatsAppWishLink(personName, turningAge, relationship) {
+    const name = personName || 'Friend';
+    const ageSuffix = (turningAge === 1 ? 'st' : turningAge === 2 ? 'nd' : turningAge === 3 ? 'rd' : 'th');
+    const ageText = turningAge ? ' ' + turningAge + ageSuffix : '';
+    const text = 'Happy' + ageText + ' Birthday, ' + name + '! 🎂🎉 Wishing you good health, joy, and a fantastic year ahead!';
+    return 'https://wa.me/?text=' + encodeURIComponent(text);
+}
+
+function selectRelChip(rel) {
+    const fRel = document.getElementById('f-rel');
+    if (fRel) fRel.value = rel;
+    document.querySelectorAll('#rel-chips-selector .cat-chip').forEach(function(btn) {
+        if (btn.dataset.rel === rel) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+}
+
+function setBdayRelFilter(rel) {
+    activeBdayRelFilter = rel;
+    document.querySelectorAll('#bday-filter-bar .pill').forEach(function(p) {
+        if (p.dataset.rel === rel) p.classList.add('active');
+        else p.classList.remove('active');
+    });
+    SoundFX.playTick();
+    doHaptic(8);
+    render();
+}
+
+function switchViewTab(tab) {
+    currentViewTab = tab;
+    try { localStorage.setItem('events_view_tab', tab); } catch(_) {}
+
+    const tabBday = document.getElementById('tab-birthdays');
+    const tabEvents = document.getElementById('tab-events');
+    const heading = document.getElementById('app-main-heading');
+    if (tabBday && tabEvents) {
+        if (tab === 'birthdays') {
+            tabBday.classList.add('active');
+            tabBday.setAttribute('aria-selected', 'true');
+            tabEvents.classList.remove('active');
+            tabEvents.setAttribute('aria-selected', 'false');
+            if (heading) heading.textContent = '🎉 Birthdays';
+        } else {
+            tabEvents.classList.add('active');
+            tabEvents.setAttribute('aria-selected', 'true');
+            tabBday.classList.remove('active');
+            tabBday.setAttribute('aria-selected', 'false');
+            if (heading) heading.textContent = '📅 Events';
+        }
+    }
+    SoundFX.playPop();
+    doHaptic(10);
+    render();
+}
+
+function updateBdayFormPreview() {
+    const fCat = document.getElementById('f-cat');
+    const isBday = (currentViewTab === 'birthdays') || (fCat && fCat.value === 'birthday');
+    const previewBox = document.getElementById('bday-age-preview');
+    const dateInput = document.getElementById('f-date');
+    if (!previewBox || !dateInput) return;
+
+    if (!isBday || !dateInput.value) {
+        previewBox.style.display = 'none';
+        previewBox.innerHTML = '';
+        return;
+    }
+
+    const m = computeBirthdayMetrics(dateInput.value);
+    previewBox.style.display = 'block';
+    previewBox.innerHTML = '✨ <strong>Age Today:</strong> ' + m.currentAgeYears + ' yrs (' + m.currentAgeMonths + 'm ' + m.currentAgeDays + 'd) • '
+        + '<strong>Turning ' + m.turningAge + '</strong> in ' + (m.isToday ? '🎉 TODAY!' : m.daysLeft + ' days')
+        + (m.milestoneLabel ? '<br><span style="color:#ffd60a;font-weight:700;">' + m.milestoneLabel + '</span>' : '')
+        + ' <span style="opacity:0.7">(' + m.zodiacGlyph + ' ' + m.zodiacName + ')</span>';
+}
+
+function jumpDecade(year) {
+    const dateInput = document.getElementById('f-date');
+    if (!dateInput) return;
+    const currentVal = dateInput.value;
+    let monthDay = '01-01';
+    if (currentVal && currentVal.length >= 10) {
+        monthDay = currentVal.substring(5);
+    }
+    dateInput.value = year + '-' + monthDay;
+    updateBdayFormPreview();
+    SoundFX.playTick();
+    doHaptic(8);
+}
+
+function bdayCardHtml(evt) {
+    const m = evt._bMetrics || computeBirthdayMetrics(evt.birthDate || evt.date);
+    const d = m.daysLeft;
+    const isToday = m.isToday;
+    const uc = isToday ? 'u-today' : urgencyClass(d);
+    const pls = isToday || d <= 3 ? 'pulsing' : '';
+    const badgeTextStr = isToday ? '🎂 TODAY!' : (d === 1 ? 'Tomorrow!' : d + 'd left');
+    const celebrateAttr = isToday ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
+    const rel = evt.relationship || 'family';
+    const relLabel = rel === 'family' ? '👨‍👩‍👧 Family' : rel === 'friend' ? '🤝 Friend' : rel === 'work' ? '💼 Work' : '⭐ VIP';
+    const milestone = m.milestoneLabel ? '<span class="bday-milestone-pill">' + m.milestoneLabel + '</span>' : '';
+    const waLink = buildWhatsAppWishLink(evt.name, m.turningAge, rel);
+
+    const rawName = (evt.name || 'B').trim();
+    const initials = rawName.split(/\s+/).slice(0, 2).map(function(w) { return w[0] ? w[0].toUpperCase() : ''; }).join('') || '🎂';
+    const giftBadge = evt.giftIdeas ? '<div class="card-notes" style="margin-top:6px;">🎁 ' + esc(evt.giftIdeas) + '</div>' : (evt.notes ? '<div class="card-notes" style="margin-top:6px;">📝 ' + esc(evt.notes) + '</div>' : '');
+
+    return '<div class="card-wrapper" data-id="' + evt.id + '">'
+        + '<div class="card-swipe-bg">'
+        +   '<div class="swipe-trash-content">'
+        +     '<span class="swipe-trash-icon">🗑️</span>'
+        +     '<span class="swipe-trash-text">Release to delete</span>'
+        +   '</div>'
+        + '</div>'
+        + '<div class="card bday-card ' + uc + ' ' + pls + '" data-id="' + evt.id + '" onclick="openDetailModal(\'' + evt.id + '\',event)">'
+        + '<div class="card-inner">'
+        +   '<div class="card-top">'
+        +     '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
+        +       '<span class="cat-tag"><span class="cat-icon">🎂</span><span>Birthday</span></span>'
+        +       '<span class="bday-rel-pill">' + relLabel + '</span>'
+        +       '<span class="bday-zodiac-pill">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
+        +       milestone
+        +     '</div>'
+        +     '<div class="days-badge" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badgeTextStr + '</div>'
+        +   '</div>'
+        +   '<div style="display:flex;align-items:center;gap:12px;margin:8px 0 4px;">'
+        +     '<div class="bday-avatar">' + initials + '</div>'
+        +     '<div>'
+        +       '<div class="card-name" style="font-size:16.5px;margin-bottom:2px;">' + esc(evt.name) + '</div>'
+        +       '<div class="bday-turning-headline">' + (isToday ? '🎂 Turning ' + m.turningAge + ' Today!' : 'Turning ' + m.turningAge) + '</div>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="bday-exact-age">'
+        +     '<span>📅 ' + fmtDate(m.nextDateStr) + '</span>'
+        +     '<span style="opacity:0.4">•</span>'
+        +     '<span>Age: <strong>' + m.currentAgeYears + ' yrs</strong> (' + m.currentAgeMonths + 'm ' + m.currentAgeDays + 'd)</span>'
+        +   '</div>'
+        +   giftBadge
+        + '</div>'
+        + '<div class="card-actions">'
+        +   '<a class="btn-whatsapp-wish" href="' + waLink + '" target="_blank" onclick="event.stopPropagation()">📲 Wish</a>'
+        +   '<button class="btn-share" onclick="doShareEvent(\'' + evt.id + '\',event)">↗️ Share</button>'
+        +   '<button class="btn-edit" onclick="doEdit(\'' + evt.id + '\',event)">✏️ Edit</button>'
+        +   '<button class="btn-del"  onclick="doDelPrompt(\'' + evt.id + '\',event)">🗑️ Delete</button>'
+        + '</div>'
+        + '</div>'
+        + '</div>';
+}
+
+function bdayHeroHtml(evt) {
+    if (!evt) return '';
+    const m = evt._bMetrics || computeBirthdayMetrics(evt.birthDate || evt.date);
+    const d = m.daysLeft;
+    const isToday = m.isToday;
+    const uc = isToday ? 'u-today' : urgencyClass(d);
+    const rel = evt.relationship || 'family';
+    const relLabel = rel === 'family' ? '👨‍👩‍👧 Family' : rel === 'friend' ? '🤝 Friend' : rel === 'work' ? '💼 Work' : '⭐ VIP';
+    const milestone = m.milestoneLabel ? '<span class="bday-milestone-pill" style="margin-left:6px;">' + m.milestoneLabel + '</span>' : '';
+    const waLink = buildWhatsAppWishLink(evt.name, m.turningAge, rel);
+    const celebrateAttr = isToday ? ' onclick="celebrateToday(event)" style="cursor:pointer;"' : '';
+
+    return '<div class="hero-card bday-hero ' + uc + '" data-id="' + evt.id + '" onclick="openDetailModal(\'' + evt.id + '\',event)">'
+        + '<div class="hero-ambient-glow"></div>'
+        + '<div class="hero-top-badge">'
+        +   '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
+        +     '<div class="cat-tag"><span class="cat-icon">🎂</span><span>Birthday</span></div>'
+        +     '<span class="bday-rel-pill">' + relLabel + '</span>'
+        +     '<span class="bday-zodiac-pill">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
+        +     milestone
+        +   '</div>'
+        +   '<span class="hero-spotlight-pill">🎂 NEXT BIRTHDAY</span>'
+        + '</div>'
+        + '<div class="hero-digits-wrap"' + celebrateAttr + '>'
+        +   '<div class="hero-days-number">' + (isToday ? '🎂 TODAY' : (d === 1 ? 'TOMORROW' : d)) + '</div>'
+        +   '<div class="hero-days-label">' + (isToday ? 'CELEBRATE BIRTHDAY TODAY!' : (d === 1 ? 'DAY REMAINING' : 'DAYS REMAINING')) + '</div>'
+        + '</div>'
+        + '<div class="bday-turning-headline" style="text-align:center;font-size:24px;margin-top:6px;">'
+        +   (isToday ? '🎉 ' + esc(evt.name) + ' Turns ' + m.turningAge + ' Today!' : esc(evt.name) + ' is Turning ' + m.turningAge)
+        + '</div>'
+        + '<div style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-top:10px;">'
+        +   '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-1);margin-bottom:3px;">'
+        +     '<span>📅 <strong>' + fmtDate(m.nextDateStr) + '</strong></span>'
+        +     '<span class="hero-live-ticker" id="hero-ticker">' + liveExactTicker(m.nextDateStr) + '</span>'
+        +   '</div>'
+        +   '<div style="font-size:12px;color:var(--text-2);">'
+        +     'Currently <strong>' + m.currentAgeYears + ' yrs, ' + m.currentAgeMonths + ' mos, ' + m.currentAgeDays + ' days</strong>'
+        +     ' <span style="opacity:0.5">• ' + m.totalDaysLived.toLocaleString() + ' days lived</span>'
+        +   '</div>'
+        + '</div>'
+        + (evt.giftIdeas ? '<div class="hero-notes" style="margin-top:8px;">🎁 Gift Ideas: ' + esc(evt.giftIdeas) + '</div>' : (evt.notes ? '<div class="hero-notes" style="margin-top:8px;">📝 ' + esc(evt.notes) + '</div>' : ''))
+        + '<div class="hero-quick-row" style="gap:8px;margin-top:12px;">'
+        +   '<a class="btn-whatsapp-wish" href="' + waLink + '" target="_blank" onclick="event.stopPropagation()">📲 Wish on WhatsApp</a>'
+        +   '<button type="button" class="hero-action-btn" onclick="openDetailModal(\'' + evt.id + '\',event)">View Profile →</button>'
+        + '</div>'
+        + '</div>';
+}
+
 function heroHtml(evt) {
     if (!evt) return '';
     const d = daysLeft(evt.date);
@@ -2128,9 +2728,20 @@ function heroHtml(evt) {
 function downloadIcsFile(evt) {
     if (!evt || !evt.date) return;
     try {
-        const parts = evt.date.split('-');
-        if (parts.length !== 3) return;
-        const y = parts[0], m = parts[1], d = parts[2];
+        let y, m, d;
+        if (evt.category === 'birthday') {
+            const bm = computeBirthdayMetrics(evt.birthDate || evt.date);
+            const p = parseDateParts(bm.nextDateStr);
+            if (!p) return;
+            y = String(p.y);
+            m = String(p.m).padStart(2, '0');
+            d = String(p.d).padStart(2, '0');
+        } else {
+            const parts = evt.date.split('-');
+            if (parts.length !== 3) return;
+            y = parts[0]; m = parts[1]; d = parts[2];
+        }
+
         const nextDay = new Date(Number(y), Number(m) - 1, Number(d) + 1);
         const ny = nextDay.getFullYear();
         const nm = String(nextDay.getMonth() + 1).padStart(2, '0');
@@ -2151,12 +2762,17 @@ function downloadIcsFile(evt) {
             'DTSTAMP:' + y + m + d + 'T000000Z',
             'DTSTART;VALUE=DATE:' + dtStart,
             'DTEND;VALUE=DATE:' + dtEnd,
-            'SUMMARY:' + evt.name.replace(/[,;\\]/g, ' '),
-            'DESCRIPTION:' + (evt.notes || '').replace(/[,;\\]/g, ' '),
-            'STATUS:CONFIRMED',
-            'END:VEVENT',
-            'END:VCALENDAR'
+            'SUMMARY:' + (evt.category === 'birthday' ? '🎂 ' + evt.name + ' Birthday' : evt.name).replace(/[,;\\]/g, ' '),
+            'DESCRIPTION:' + ((evt.giftIdeas ? 'Gift Ideas: ' + evt.giftIdeas + ' | ' : '') + (evt.notes || '')).replace(/[,;\\]/g, ' '),
+            'STATUS:CONFIRMED'
         ];
+
+        if (evt.category === 'birthday') {
+            lines.push('RRULE:FREQ=YEARLY');
+        }
+
+        lines.push('END:VEVENT');
+        lines.push('END:VCALENDAR');
 
         const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -2200,21 +2816,70 @@ function openDetailModal(id, e) {
     const elTimerVal = document.getElementById('detail-timer-val');
     const elNotesWrap = document.getElementById('detail-notes-wrap');
     const elNotes = document.getElementById('detail-notes');
+    const bdayBox = document.getElementById('detail-bday-box');
+    const bdayGiftsWrap = document.getElementById('detail-gifts-wrap');
+    const bdayGiftsTxt = document.getElementById('detail-gifts-txt');
+    const btnWhatsApp = document.getElementById('detail-btn-whatsapp');
+
+    let countdownTargetDate = evt.date;
 
     if (elTitle) elTitle.textContent = evt.name;
     if (elCat) elCat.innerHTML = cat.icon + ' ' + cat.label;
-    if (elBadge) {
-        elBadge.textContent = d === 0 ? 'Today!' : (d > 0 ? d + 'd left' : Math.abs(d) + 'd ago');
-        elBadge.style.color = d === 0 ? 'var(--c-today)' : (d <= 3 ? 'var(--c-high)' : 'var(--c-low)');
-    }
-    if (elDate) {
-        elDate.textContent = '📅 ' + new Date(evt.date + 'T00:00:00').toLocaleDateString('en-GB', {
-            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
+
+    if (evt.category === 'birthday') {
+        const m = computeBirthdayMetrics(evt.birthDate || evt.date);
+        countdownTargetDate = m.nextDateStr;
+        const rel = evt.relationship || 'family';
+        const relLabel = rel === 'family' ? '👨‍👩‍👧 Family' : rel === 'friend' ? '🤝 Friend' : rel === 'work' ? '💼 Work' : '⭐ VIP';
+        if (elCat) elCat.innerHTML = '🎂 Birthday • ' + relLabel;
+
+        if (elBadge) {
+            elBadge.textContent = m.isToday ? '🎂 TODAY!' : (m.daysLeft === 1 ? 'Tomorrow!' : m.daysLeft + 'd left');
+            elBadge.style.color = m.isToday ? 'var(--c-today)' : (m.daysLeft <= 3 ? 'var(--c-high)' : 'var(--c-low)');
+        }
+        if (elDate) {
+            elDate.textContent = '📅 Next: ' + new Date(m.nextDateStr + 'T00:00:00').toLocaleDateString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            }) + ' • Born: ' + (evt.birthDate || evt.date);
+        }
+        if (bdayBox) {
+            bdayBox.style.display = 'block';
+            const tTitle = document.getElementById('detail-turning-title');
+            const zBadge = document.getElementById('detail-zodiac-badge');
+            const exactAge = document.getElementById('detail-exact-age-txt');
+            const livedTxt = document.getElementById('detail-lived-txt');
+            if (tTitle) tTitle.textContent = (m.isToday ? '🎂 Turning ' + m.turningAge + ' Today!' : 'Turning ' + m.turningAge);
+            if (zBadge) zBadge.textContent = m.zodiacGlyph + ' ' + m.zodiacName;
+            if (exactAge) exactAge.textContent = 'Currently ' + m.currentAgeYears + ' yrs, ' + m.currentAgeMonths + ' mos, ' + m.currentAgeDays + ' days';
+            if (livedTxt) livedTxt.textContent = m.totalDaysLived.toLocaleString() + ' days lived on Earth' + (m.milestoneLabel ? ' • ' + m.milestoneLabel : '');
+        }
+        if (evt.giftIdeas && evt.giftIdeas.trim()) {
+            if (bdayGiftsWrap) bdayGiftsWrap.style.display = 'block';
+            if (bdayGiftsTxt) bdayGiftsTxt.textContent = evt.giftIdeas;
+        } else {
+            if (bdayGiftsWrap) bdayGiftsWrap.style.display = 'none';
+        }
+        if (btnWhatsApp) {
+            btnWhatsApp.style.display = 'inline-flex';
+            btnWhatsApp.href = buildWhatsAppWishLink(evt.name, m.turningAge, evt.relationship);
+        }
+    } else {
+        if (elBadge) {
+            elBadge.textContent = d === 0 ? 'Today!' : (d > 0 ? d + 'd left' : Math.abs(d) + 'd ago');
+            elBadge.style.color = d === 0 ? 'var(--c-today)' : (d <= 3 ? 'var(--c-high)' : 'var(--c-low)');
+        }
+        if (elDate) {
+            elDate.textContent = '📅 ' + new Date(evt.date + 'T00:00:00').toLocaleDateString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+        if (bdayBox) bdayBox.style.display = 'none';
+        if (bdayGiftsWrap) bdayGiftsWrap.style.display = 'none';
+        if (btnWhatsApp) btnWhatsApp.style.display = 'none';
     }
 
     if (elTimerVal) {
-        elTimerVal.textContent = liveExactTicker(evt.date);
+        elTimerVal.textContent = liveExactTicker(countdownTargetDate);
     }
 
     if (evt.notes && evt.notes.trim()) {
@@ -2261,7 +2926,7 @@ function openDetailModal(id, e) {
     clearInterval(detailTimer);
     detailTimer = setInterval(function() {
         if (elTimerVal && currentDetailId === id) {
-            elTimerVal.textContent = liveExactTicker(evt.date);
+            elTimerVal.textContent = liveExactTicker(countdownTargetDate);
         }
     }, 1000);
 }
@@ -2295,6 +2960,36 @@ const CAT_KEYWORDS = [
     { cat: 'reminder', rx: /\b(doctor|dentist|medicine|renew|renewal|passport|gym|appointment|checkup|service|repair|pill)\b/i }
 ];
 
+function updateModalFieldsForCategory(cat) {
+    const isBday = (cat === 'birthday');
+    const lblName = document.getElementById('lbl-f-name');
+    const lblDate = document.getElementById('lbl-f-date');
+    const decadeWrap = document.getElementById('bday-decade-wrap');
+    const relWrap = document.getElementById('bday-rel-wrap');
+    const giftsWrap = document.getElementById('bday-gifts-wrap');
+    const quickPresets = document.getElementById('quick-date-presets');
+    const quickLbl = document.getElementById('quick-presets-lbl');
+
+    if (isBday) {
+        if (lblName) lblName.innerHTML = 'Person\'s Name <span style="color:var(--c-today)">*</span>';
+        if (lblDate) lblDate.innerHTML = 'Birth Date (Day, Month, Year) <span style="color:var(--c-today)">*</span>';
+        if (decadeWrap) decadeWrap.style.display = 'block';
+        if (relWrap) relWrap.style.display = 'block';
+        if (giftsWrap) giftsWrap.style.display = 'block';
+        if (quickPresets) quickPresets.style.display = 'none';
+        if (quickLbl) quickLbl.style.display = 'none';
+    } else {
+        if (lblName) lblName.innerHTML = 'Event Name <span style="color:var(--c-today)">*</span>';
+        if (lblDate) lblDate.innerHTML = 'Date <span style="color:var(--c-today)">*</span>';
+        if (decadeWrap) decadeWrap.style.display = 'none';
+        if (relWrap) relWrap.style.display = 'none';
+        if (giftsWrap) giftsWrap.style.display = 'none';
+        if (quickPresets) quickPresets.style.display = 'flex';
+        if (quickLbl) quickLbl.style.display = 'inline';
+    }
+    updateBdayFormPreview();
+}
+
 function selectCategoryChip(catKey) {
     const sel = document.getElementById('f-cat');
     if (sel) sel.value = catKey;
@@ -2305,6 +3000,7 @@ function selectCategoryChip(catKey) {
             btn.classList.remove('active');
         }
     });
+    updateModalFieldsForCategory(catKey);
 }
 
 function checkAutoCategorize(text) {
@@ -2653,7 +3349,108 @@ function clearSearch() {
 /* =====================================================
    RENDER
 ===================================================== */
-function render() {
+function renderBirthdaysView(allBdays) {
+    let bdays = [...allBdays];
+
+    if (activeBdayRelFilter !== 'all') {
+        bdays = bdays.filter(e => (e.relationship || 'family') === activeBdayRelFilter);
+    }
+
+    if (searchQuery && searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        bdays = bdays.filter(e => {
+            const name = (e.name || '').toLowerCase();
+            const notes = (e.notes || '').toLowerCase();
+            const gifts = (e.giftIdeas || '').toLowerCase();
+            const rel = (e.relationship || '').toLowerCase();
+            const m = e._bMetrics;
+            const ageStr = m ? String(m.turningAge) : '';
+            return name.includes(q) || notes.includes(q) || gifts.includes(q) || rel.includes(q) || ageStr.includes(q);
+        });
+    }
+
+    /* Search UI indicators */
+    const searchClear = document.getElementById('search-clear');
+    const searchBadge = document.getElementById('search-badge');
+    if (searchQuery.trim()) {
+        if (searchClear) searchClear.style.display = 'flex';
+        if (searchBadge) {
+            searchBadge.style.display = 'inline-block';
+            searchBadge.textContent = bdays.length + ' found';
+        }
+    } else {
+        if (searchClear) searchClear.style.display = 'none';
+        if (searchBadge) searchBadge.style.display = 'none';
+    }
+
+    /* Hero Spotlight Component */
+    const heroSpot = document.getElementById('hero-spotlight');
+    if (heroSpot) {
+        if (bdays.length > 0) {
+            heroSpot.style.display = 'block';
+            heroSpot.innerHTML = bdayHeroHtml(bdays[0]);
+        } else {
+            heroSpot.style.display = 'none';
+            heroSpot.innerHTML = '';
+        }
+    }
+
+    /* Active section with Horizon Chunking */
+    const aList = document.getElementById('active-list');
+    const aHdr  = document.getElementById('active-hdr');
+
+    if (bdays.length) {
+        if (bdays.length === 1) {
+            aHdr.textContent = (searchQuery.trim() ? 'Matching Birthday (1)' : 'Upcoming Birthday (1)');
+            aList.innerHTML = '<div style="text-align:center;padding:12px 10px 8px;font-size:12px;color:var(--text-3);">🎂 Nearest birthday spotlighted above. Tap + to add more!</div>';
+        } else {
+            const remaining = bdays.slice(1);
+            const thisWeek  = remaining.filter(e => e._daysLeft <= 7);
+            const thisMonth = remaining.filter(e => e._daysLeft > 7 && e._daysLeft <= 30);
+            const later     = remaining.filter(e => e._daysLeft > 30);
+
+            let listHtml = '';
+            if (thisWeek.length) {
+                listHtml += '<div class="horizon-group">'
+                    + '<div class="horizon-hdr"><span class="horizon-icon">🔥</span><span class="horizon-title">This Week</span><span class="horizon-count">' + thisWeek.length + '</span></div>'
+                    + thisWeek.map(bdayCardHtml).join('')
+                    + '</div>';
+            }
+            if (thisMonth.length) {
+                listHtml += '<div class="horizon-group">'
+                    + '<div class="horizon-hdr"><span class="horizon-icon">🗓️</span><span class="horizon-title">This Month</span><span class="horizon-count">' + thisMonth.length + '</span></div>'
+                    + thisMonth.map(bdayCardHtml).join('')
+                    + '</div>';
+            }
+            if (later.length) {
+                listHtml += '<div class="horizon-group">'
+                    + '<div class="horizon-hdr"><span class="horizon-icon">⏳</span><span class="horizon-title">Later On</span><span class="horizon-count">' + later.length + '</span></div>'
+                    + later.map(bdayCardHtml).join('')
+                    + '</div>';
+            }
+
+            aHdr.textContent = (searchQuery.trim() ? 'Matching Birthdays — ' : 'Upcoming Birthdays — ') + bdays.length;
+            aList.innerHTML = listHtml;
+        }
+    } else {
+        aHdr.textContent = '';
+        if (searchQuery.trim()) {
+            aList.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span><p>No birthdays match "<strong>' + esc(searchQuery) + '</strong>".<br><button type="button" onclick="clearSearch()" class="toast-btn" style="margin-top:12px;padding:6px 14px;border-radius:12px;cursor:pointer;">Clear Search</button></p></div>';
+        } else {
+            aList.innerHTML = '<div class="empty"><span class="empty-icon">🎂</span><p>No birthdays tracked yet.<br>Tap <strong>+</strong> to add your family & friends!</p></div>';
+        }
+    }
+
+    /* Hide archived section for perpetual birthdays */
+    const archWrap = document.getElementById('archive-wrap');
+    if (archWrap) archWrap.style.display = 'none';
+
+    /* Header chip */
+    const hdrChip = document.getElementById('hdr-chip');
+    if (hdrChip) hdrChip.textContent = allBdays.length + ' birthdays';
+}
+
+function renderEventsView() {
     const all      = sortedFiltered();
     const active   = all.filter(e => daysLeft(e.date) >= 0);
     const archived = all.filter(e => daysLeft(e.date) < 0);
@@ -2747,13 +3544,56 @@ function render() {
     const upCount = events.filter(e => daysLeft(e.date) >= 0).length;
     const hdrChip = document.getElementById('hdr-chip');
     if (hdrChip) hdrChip.textContent = upCount + ' upcoming';
+}
 
-    /* Attach real-time swipe handlers */
+function updateBdayFilterCounts(allBdays) {
+    const cntAll = document.getElementById('bday-cnt-all');
+    if (cntAll) cntAll.textContent = allBdays.length;
+
+    const rels = ['family', 'friend', 'work', 'vip'];
+    rels.forEach(function(r) {
+        const el = document.getElementById('bday-cnt-' + r);
+        if (el) {
+            const c = allBdays.filter(function(b) {
+                return (b.relationship || 'family') === r;
+            }).length;
+            el.textContent = c;
+        }
+    });
+}
+
+function render() {
+    const allBdays = events.filter(e => e.category === 'birthday').map(e => {
+        const m = computeBirthdayMetrics(e.birthDate || e.date);
+        return Object.assign({}, e, { _bMetrics: m, _daysLeft: m.daysLeft });
+    }).sort((a, b) => a._daysLeft - b._daysLeft || a.name.localeCompare(b.name));
+
+    const bdayBadge = document.getElementById('bday-badge-count');
+    if (bdayBadge) bdayBadge.textContent = allBdays.length;
+
+    const activeGenEvents = events.filter(e => daysLeft(e.date) >= 0 && e.category !== 'birthday');
+    const eventsBadge = document.getElementById('events-badge-count');
+    if (eventsBadge) eventsBadge.textContent = activeGenEvents.length;
+
+    const catFilterBar = document.getElementById('filter-bar');
+    const bdayFilterBar = document.getElementById('bday-filter-bar');
+    const mainHeading = document.getElementById('app-main-heading');
+
+    if (currentViewTab === 'birthdays') {
+        if (catFilterBar) catFilterBar.style.display = 'none';
+        if (bdayFilterBar) bdayFilterBar.style.display = 'flex';
+        if (mainHeading) mainHeading.textContent = '🎉 Birthdays';
+        renderBirthdaysView(allBdays);
+    } else {
+        if (catFilterBar) catFilterBar.style.display = 'flex';
+        if (bdayFilterBar) bdayFilterBar.style.display = 'none';
+        if (mainHeading) mainHeading.textContent = '📅 Events';
+        renderEventsView();
+    }
+
     document.querySelectorAll('.card').forEach(attachSwipeHandlers);
-
-    /* Update live counts on filter pills */
     updateFilterCounts();
-
+    updateBdayFilterCounts(allBdays);
     setupLive();
 }
 
@@ -2761,13 +3601,19 @@ function render() {
 function setupLive() {
     clearInterval(liveTimer);
     liveTimer = setInterval(function() {
-        // Update hero ticker if active
         const ticker = document.getElementById('hero-ticker');
         const heroCard = document.querySelector('.hero-card');
         if (ticker && heroCard) {
             const hId = heroCard.dataset.id;
             const hEv = events.find(function(ev) { return ev.id === hId; });
-            if (hEv) ticker.textContent = liveExactTicker(hEv.date);
+            if (hEv) {
+                if (hEv.category === 'birthday') {
+                    const m = computeBirthdayMetrics(hEv.birthDate || hEv.date);
+                    ticker.textContent = liveExactTicker(m.nextDateStr);
+                } else {
+                    ticker.textContent = liveExactTicker(hEv.date);
+                }
+            }
         }
 
         // Update live countdown badges for today's events
@@ -2836,32 +3682,46 @@ function openModal(evtId) {
     document.getElementById('f-id').value    = '';
     document.getElementById('f-name').value  = '';
     document.getElementById('f-date').value  = '';
-    document.getElementById('f-cat').value   = 'general';
     document.getElementById('f-notes').value = '';
+    const fGifts = document.getElementById('f-gifts');
+    if (fGifts) fGifts.value = '';
+    selectRelChip('family');
+
     highlightActiveQuickChip(-999);
-    selectCategoryChip('general');
     const autoBadge = document.getElementById('cat-auto-badge');
     if (autoBadge) autoBadge.style.display = 'none';
 
     if (evtId) {
         const ev = events.find(function(e) { return e.id === evtId; });
         if (ev) {
-            title.textContent   = '✏️ Edit Event';
+            const isBday = (ev.category === 'birthday');
+            title.textContent   = isBday ? '✏️ Edit Birthday' : '✏️ Edit Event';
             saveLbl.textContent = 'Save Changes';
             document.getElementById('f-id').value    = ev.id;
             document.getElementById('f-name').value  = ev.name;
-            document.getElementById('f-date').value  = ev.date;
+            document.getElementById('f-date').value  = ev.birthDate || ev.date;
             document.getElementById('f-cat').value   = ev.category || 'general';
             document.getElementById('f-notes').value = ev.notes || '';
+            if (fGifts) fGifts.value = ev.giftIdeas || '';
+            selectRelChip(ev.relationship || 'family');
             selectCategoryChip(ev.category || 'general');
-            const d = daysLeft(ev.date);
-            highlightActiveQuickChip(d);
+            if (!isBday) {
+                const d = daysLeft(ev.date);
+                highlightActiveQuickChip(d);
+            }
         }
     } else {
-        title.textContent   = '✨ New Event';
-        saveLbl.textContent = 'Save Event';
-        setQuickDate(0);
-        selectCategoryChip('general');
+        const isBdayMode = (currentViewTab === 'birthdays');
+        title.textContent   = isBdayMode ? '🎂 Add Birthday' : '✨ New Event';
+        saveLbl.textContent = isBdayMode ? 'Save Birthday' : 'Save Event';
+        if (isBdayMode) {
+            selectCategoryChip('birthday');
+            document.getElementById('f-date').value = '1995-01-01';
+            updateBdayFormPreview();
+        } else {
+            selectCategoryChip('general');
+            setQuickDate(0);
+        }
     }
 
     overlay.classList.add('on');
@@ -2894,20 +3754,31 @@ document.getElementById('ev-form').addEventListener('submit', function(e) {
     const date  = document.getElementById('f-date').value;
     const cat   = document.getElementById('f-cat').value || 'general';
     const notes = document.getElementById('f-notes').value.trim();
+    const fRel  = document.getElementById('f-rel');
+    const fGifts= document.getElementById('f-gifts');
+    const rel   = fRel ? fRel.value : 'family';
+    const gifts = fGifts ? fGifts.value.trim() : '';
 
     if (!name || !date) return;
 
+    const dataObj = { name: name, date: date, category: cat, notes: notes };
+    if (cat === 'birthday') {
+        dataObj.birthDate = date;
+        dataObj.relationship = rel;
+        dataObj.giftIdeas = gifts;
+    }
+
     if (id) {
         const idx = events.findIndex(function(ev) { return ev.id === id; });
-        if (idx > -1) events[idx] = Object.assign({}, events[idx], { name: name, date: date, category: cat, notes: notes });
+        if (idx > -1) events[idx] = Object.assign({}, events[idx], dataObj);
     } else {
-        events.push({ id: uid(), name: name, date: date, category: cat, notes: notes, createdAt: Date.now() });
+        events.push(Object.assign({ id: uid(), createdAt: Date.now() }, dataObj));
     }
 
     save();
     closeModal();
     render();
-    showToast(id ? 'Event updated' : 'Event created');
+    showToast(id ? (cat === 'birthday' ? 'Birthday updated' : 'Event updated') : (cat === 'birthday' ? 'Birthday added! 🎂' : 'Event created'));
 });
 
 /* =====================================================
@@ -3326,7 +4197,7 @@ render();
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.2.0";
+const CURRENT_APP_VERSION = "1.3.0";
 
 // Display current version in footer on load
 const versionBadge = document.getElementById('app-version-display');
