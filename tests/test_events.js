@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.3.0">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.3.0">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.3.0">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.4.0">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.4.0">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.4.0">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -701,5 +701,41 @@ assert(previewHtml.includes('Turning'), 'Preview must show Turning age');
 assert.strictEqual(mockElements['bday-age-preview'].style.display, 'block', 'Preview box must be displayed');
 console.log('  [PASS] WhatsApp greeting URL and dynamic live age preview verified.');
 
-console.log('\n=== ALL 25 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+// 26. Test Compact Prayer-Times Card Layout & High-Density Invariants
+console.log('\nTest 26: Compact Prayer-Times Style Card Layout & High-Density Invariants...');
+const sampleBday = {
+    id: 'b-compact-1',
+    name: 'Sarah Jenkins',
+    birthDate: '1995-05-20',
+    date: '1995-05-20',
+    category: 'birthday',
+    relationship: 'friend'
+};
+const bdayMarkup = sandbox.bdayCardHtml(sampleBday);
+assert(bdayMarkup.includes('card-bubble bday-bubble'), 'bdayCardHtml must contain card-bubble bday-bubble');
+assert(bdayMarkup.includes('card-content-stack'), 'bdayCardHtml must contain card-content-stack');
+assert(bdayMarkup.includes('card-name-txt'), 'bdayCardHtml must contain card-name-txt');
+assert(bdayMarkup.includes('card-turning-pill'), 'bdayCardHtml must contain card-turning-pill');
+assert(bdayMarkup.includes('card-chevron'), 'bdayCardHtml must contain card-chevron');
+assert(bdayMarkup.includes('days-badge-compact'), 'bdayCardHtml must contain days-badge-compact');
+assert(!bdayMarkup.includes('class="card-actions"'), 'bdayCardHtml must NOT contain bulky inline action buttons');
+
+const sampleEvent = {
+    id: 'e-compact-1',
+    name: 'Quarterly Project Review',
+    date: '2026-11-15',
+    category: 'meeting',
+    notes: 'Prepare slides'
+};
+const eventMarkup = sandbox.cardHtml(sampleEvent, false);
+assert(eventMarkup.includes('card-bubble'), 'cardHtml must contain card-bubble');
+assert(eventMarkup.includes('card-content-stack'), 'cardHtml must contain card-content-stack');
+assert(eventMarkup.includes('card-name-txt'), 'cardHtml must contain card-name-txt');
+assert(eventMarkup.includes('card-cat-pill'), 'cardHtml must contain card-cat-pill');
+assert(eventMarkup.includes('days-badge-compact'), 'cardHtml must contain days-badge-compact');
+assert(eventMarkup.includes('card-chevron'), 'cardHtml must contain card-chevron');
+assert(!eventMarkup.includes('class="card-actions"'), 'cardHtml must NOT contain bulky inline action buttons');
+console.log('  [PASS] Compact prayer-times layout, high density, and clean action delegation verified.');
+
+console.log('\n=== ALL 26 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
 process.exit(0);

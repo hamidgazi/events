@@ -111,5 +111,16 @@ This document records architectural decisions, critical mobile quirks, operating
   4. **RFC 5545 Recurrence**: Inject `RRULE:FREQ=YEARLY` into client-generated `.ics` blobs for birthdays, instructing device calendar daemons (Google/Apple Calendar) to perpetually re-notify every year.
   5. **1-Tap WhatsApp Greetings**: Format celebratory deep-links using `https://wa.me/?text=...` with auto-tailored congratulatory copy including landmark milestone tags (e.g., *"Happy 60th Diamond Jubilee!"*).
 
+### 7. Compact Prayer-Times Style Card Architecture & Cognitive Density (v1.4.0)
+* **Finding**: Large cards ($150\text{--}180\text{px}$) with embedded action button clusters (`Share`, `Edit`, `Delete`, `Wish`) severely reduce viewport efficiency, showing only 2–3 items on smartphone screens and inducing high visual noise and excessive thumb scrolling.
+* **Solution**:
+  1. **High-Density 2-Line Row Layout ($\approx 56\text{px}$)**: Modeled on the proven *02-Namaz-Prayer-Times* `.prayer-card` schema:
+     - *Left*: 38px circular bubble with monogram initials or category icon.
+     - *Middle Stack*: Primary line with title and turning age pill / category pill; secondary line with date and subtle relationship/zodiac chips.
+     - *Right Group*: High-contrast countdown badge with tabular numerals and navigation chevron (`›`).
+  2. **60% Height Reduction**: Slashes single-row height from $\approx 160\text{px}$ to $\approx 56\text{px}$, allowing **6 to 8 events/birthdays visible simultaneously** on mobile without scrolling.
+  3. **Clean Action Delegation**: Inline button clusters are moved into the ergonomic slide-up **Quick-View Detail Sheet** accessible via a single tap on the row, keeping the browse list pristine, peaceful, and lightning-fast.
+
+
 
 

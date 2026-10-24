@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#0d1117">
     <title>Events Countdown</title>
     <!-- Mobile Home Screen Icons & Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.3.0">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.3.0">
-    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.3.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.3.0">
-    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.3.0">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.3.0">
-    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.3.0">
-    <link rel="manifest" href="manifest.json?v=1.3.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.4.0">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.4.0">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.4.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.4.0">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.4.0">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.4.0">
+    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.4.0">
+    <link rel="manifest" href="manifest.json?v=1.4.0">
     <style>
         /* ============================================
            CSS VARIABLES (Deep OLED Glassmorphic)
@@ -651,13 +651,13 @@
         ============================================ */
         .card-wrapper {
             position: relative;
-            border-radius: var(--radius);
-            margin-bottom: 10px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 7px;
             overflow: hidden;
             touch-action: pan-y;
-            animation: card-in .32s ease both;
+            animation: card-in .25s ease both;
             content-visibility: auto;
-            contain-intrinsic-size: 0 100px;
+            contain-intrinsic-size: 0 58px;
         }
 
         .card-swipe-bg {
@@ -668,7 +668,7 @@
             align-items: center;
             justify-content: flex-end;
             padding-right: 22px;
-            border-radius: var(--radius);
+            border-radius: var(--radius-sm);
             z-index: 1;
             pointer-events: none;
         }
@@ -688,14 +688,14 @@
         }
 
         .swipe-trash-icon {
-            font-size: 22px;
+            font-size: 20px;
             line-height: 1;
             display: inline-block;
             transition: transform 0.15s ease;
         }
 
         .swipe-trash-text {
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 700;
             letter-spacing: 0.3px;
             opacity: 0;
@@ -713,6 +713,7 @@
             transform: scale(1.3) rotate(-12deg);
         }
 
+        /* COMPACT CARD ROW (High-Density Prayer-Times style) */
         .card {
             --accent: var(--c-far);
             --accent-rgb: 110,118,129;
@@ -720,19 +721,28 @@
             z-index: 2;
             background: #161b22;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: var(--radius-sm);
             margin-bottom: 0;
-            overflow: hidden;
             cursor: pointer;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: var(--shadow);
-            transition: border-color .2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.22);
+            transition: border-color .18s, transform .15s, background .18s;
             touch-action: pan-y;
             user-select: none;
             will-change: transform;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            min-height: 56px;
+            gap: 10px;
         }
         .card:not(.swiping):active { transform: scale(0.985); }
+        .card:hover {
+            border-color: rgba(255,255,255,0.22);
+            background: #1c2128;
+        }
 
         /* Urgency left stripe */
         .card::before {
@@ -741,7 +751,7 @@
             left: 0; top: 0; bottom: 0;
             width: 3.5px;
             background: var(--accent);
-            border-radius: 3.5px 0 0 3.5px;
+            border-radius: 3px 0 0 3px;
         }
 
         /* Urgency classes */
@@ -757,16 +767,167 @@
             animation: pulse-ring 2.8s ease-in-out .6s infinite;
         }
 
-        /* Card inner layout */
-        .card-inner { padding: 14px 15px 13px 18px; }
-
-        .card-top {
+        /* Compact Card Interior Elements */
+        .card-bubble {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 9px;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            flex-shrink: 0;
+            background: rgba(var(--accent-rgb), 0.15);
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+        .card-bubble.bday-bubble {
+            background: linear-gradient(135deg, rgba(255,159,10,0.22), rgba(255,69,58,0.22));
+            border: 1px solid rgba(255,159,10,0.45);
+            color: #ffd60a;
+            font-size: 13.5px;
         }
 
+        .card-content-stack {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2.5px;
+        }
+
+        .card-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .card-name-txt {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-1);
+            letter-spacing: -0.2px;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-turning-pill {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: rgba(255, 214, 10, 0.15);
+            border: 1px solid rgba(255, 214, 10, 0.35);
+            color: #ffd60a;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .card-cat-pill {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .card-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            color: var(--text-2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .card-date-sub {
+            font-weight: 600;
+            color: var(--text-2);
+            flex-shrink: 0;
+        }
+
+        .card-meta-dot {
+            opacity: 0.35;
+            flex-shrink: 0;
+        }
+
+        .card-sub-tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 0 5px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-3);
+            flex-shrink: 0;
+        }
+
+        .card-notes-sub {
+            color: var(--text-3);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-right-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .days-badge-compact, .days-badge {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .2px;
+            padding: 4px 9px;
+            border-radius: 12px;
+            color: var(--accent);
+            background: rgba(var(--accent-rgb), .14);
+            border: 1px solid rgba(var(--accent-rgb), .28);
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .days-badge-compact.badge-today, .days-badge.badge-today {
+            background: linear-gradient(135deg, rgba(255,69,58,0.25), rgba(255,159,10,0.25));
+            border-color: rgba(255,214,10,0.6);
+            color: #ffd60a;
+            animation: today-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes today-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 214, 10, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 8px 2px rgba(255, 214, 10, 0.45); }
+        }
+
+        .card-chevron {
+            color: var(--text-3);
+            font-size: 16px;
+            font-weight: 700;
+            opacity: 0.45;
+            transition: transform .15s ease, opacity .15s ease;
+            line-height: 1;
+        }
+        .card:hover .card-chevron {
+            opacity: 0.9;
+            transform: translateX(2px);
+        }
+
+        /* Hero Spotlight & Legacy Support */
         .cat-tag {
             display: flex;
             align-items: center;
@@ -777,50 +938,6 @@
         }
         .cat-icon { font-size: 15px; line-height: 1; }
 
-        /* Days badge */
-        .days-badge {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .4px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: var(--accent);
-            background: rgba(var(--accent-rgb),.14);
-            border: 1px solid rgba(var(--accent-rgb),.28);
-            white-space: nowrap;
-        }
-
-        .card-name {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -.2px;
-            line-height: 1.25;
-            color: var(--text-1);
-            margin-bottom: 6px;
-        }
-
-        .card-date {
-            font-size: 12.5px;
-            color: var(--text-2);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .card-notes {
-            font-size: 12.5px;
-            color: var(--text-3);
-            line-height: 1.45;
-            margin-bottom: 5px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* Progress bar */
-        .prog-wrap { margin-top: 11px; }
         .prog-meta {
             display: flex;
             justify-content: space-between;
@@ -842,7 +959,7 @@
             transition: width .9s cubic-bezier(.34,1.2,.64,1);
         }
 
-        /* Expanded actions row */
+        /* Expanded actions row (if ever invoked directly) */
         .card-actions {
             display: none;
             gap: 9px;
@@ -1628,7 +1745,7 @@
 <div id="updateBanner" style="display:none; align-items:center; justify-content:space-between; background:linear-gradient(90deg, #1f6feb, #238636); color:#fff; padding:10px 16px; font-size:13px; font-weight:600; position:sticky; top:0; z-index:999; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
     <div style="display:flex; align-items:center; gap:8px;">
         <span>✨</span>
-        <span>New update available! (<span id="txtNewVersion">v1.3.0</span>)</span>
+        <span>New update available! (<span id="txtNewVersion">v1.4.0</span>)</span>
     </div>
     <button id="btnReloadUpdate" style="background:#fff; color:#0d1117; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">Update Now</button>
 </div>
@@ -1707,7 +1824,7 @@
 <!-- ===== FOOTER (VERSION & UPDATE STATUS) ===== -->
 <footer class="app-footer">
     <div class="footer-version-row">
-        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.3.0</span></span>
+        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.4.0</span></span>
         <button type="button" id="btn-manual-update-check" class="btn-check-update">🔄 Check for Updates</button>
     </div>
     <div class="footer-status-text" id="footer-status-text">App is up to date • 100% Offline PWA</div>
@@ -1919,7 +2036,7 @@
         </div>
         <input type="file" id="file-import" accept=".json,application/json" style="display:none">
         <div class="more-footer-info">
-            <span>📅 Events Countdown <span class="footer-version-badge">v1.3.0</span></span>
+            <span>📅 Events Countdown <span class="footer-version-badge">v1.4.0</span></span>
             <span style="opacity:0.6;">• 100% Offline PWA</span>
         </div>
         <button type="button" class="del-cancel" id="more-close" style="width:100%;margin-top:12px">Close</button>
@@ -1966,7 +2083,7 @@
         <div style="font-size:40px; margin-bottom:6px;">🚀</div>
         <h3 style="font-size:18px; margin-bottom:4px; color:#fff;">New Update Available!</h3>
         <p style="font-size:13.5px; color:var(--text-2); margin-bottom:14px;">
-            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.3.0</b> is ready for you.
+            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.4.0</b> is ready for you.
         </p>
         <div id="popup-changelog-box" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:12px; color:var(--text-1); text-align:left; margin-bottom:18px; line-height:1.45;">
             <b style="color:var(--text-3); font-size:11px; text-transform:uppercase;">What's New:</b><br>
@@ -2593,16 +2710,15 @@ function bdayCardHtml(evt) {
     const isToday = m.isToday;
     const uc = isToday ? 'u-today' : urgencyClass(d);
     const pls = isToday || d <= 3 ? 'pulsing' : '';
-    const badgeTextStr = isToday ? '🎂 TODAY!' : (d === 1 ? 'Tomorrow!' : d + 'd left');
+    const badgeTextStr = isToday ? '🎉 TODAY!' : (d === 1 ? 'Tomorrow!' : d + 'd left');
+    const todayBadgeClass = isToday ? 'badge-today' : '';
     const celebrateAttr = isToday ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
     const rel = evt.relationship || 'family';
-    const relLabel = rel === 'family' ? '👨‍👩‍👧 Family' : rel === 'friend' ? '🤝 Friend' : rel === 'work' ? '💼 Work' : '⭐ VIP';
-    const milestone = m.milestoneLabel ? '<span class="bday-milestone-pill">' + m.milestoneLabel + '</span>' : '';
-    const waLink = buildWhatsAppWishLink(evt.name, m.turningAge, rel);
+    const relLabel = rel === 'family' ? 'Family' : rel === 'friend' ? 'Friend' : rel === 'work' ? 'Work' : 'VIP';
+    const milestonePill = m.milestoneLabel ? '<span class="card-turning-pill" style="color:#ffd60a;border-color:rgba(255,214,10,0.45);background:rgba(255,214,10,0.18);">' + m.milestoneLabel + '</span>' : '';
 
     const rawName = (evt.name || 'B').trim();
     const initials = rawName.split(/\s+/).slice(0, 2).map(function(w) { return w[0] ? w[0].toUpperCase() : ''; }).join('') || '🎂';
-    const giftBadge = evt.giftIdeas ? '<div class="card-notes" style="margin-top:6px;">🎁 ' + esc(evt.giftIdeas) + '</div>' : (evt.notes ? '<div class="card-notes" style="margin-top:6px;">📝 ' + esc(evt.notes) + '</div>' : '');
 
     return '<div class="card-wrapper" data-id="' + evt.id + '">'
         + '<div class="card-swipe-bg">'
@@ -2612,36 +2728,24 @@ function bdayCardHtml(evt) {
         +   '</div>'
         + '</div>'
         + '<div class="card bday-card ' + uc + ' ' + pls + '" data-id="' + evt.id + '" onclick="openDetailModal(\'' + evt.id + '\',event)">'
-        + '<div class="card-inner">'
-        +   '<div class="card-top">'
-        +     '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
-        +       '<span class="cat-tag"><span class="cat-icon">🎂</span><span>Birthday</span></span>'
-        +       '<span class="bday-rel-pill">' + relLabel + '</span>'
-        +       '<span class="bday-zodiac-pill">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
-        +       milestone
+        +   '<div class="card-bubble bday-bubble">' + initials + '</div>'
+        +   '<div class="card-content-stack">'
+        +     '<div class="card-title-row">'
+        +       '<span class="card-name-txt">' + esc(evt.name) + '</span>'
+        +       '<span class="card-turning-pill">Turning ' + m.turningAge + '</span>'
+        +       milestonePill
         +     '</div>'
-        +     '<div class="days-badge" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badgeTextStr + '</div>'
-        +   '</div>'
-        +   '<div style="display:flex;align-items:center;gap:12px;margin:8px 0 4px;">'
-        +     '<div class="bday-avatar">' + initials + '</div>'
-        +     '<div>'
-        +       '<div class="card-name" style="font-size:16.5px;margin-bottom:2px;">' + esc(evt.name) + '</div>'
-        +       '<div class="bday-turning-headline">' + (isToday ? '🎂 Turning ' + m.turningAge + ' Today!' : 'Turning ' + m.turningAge) + '</div>'
+        +     '<div class="card-sub-row">'
+        +       '<span class="card-date-sub">📅 ' + fmtDate(m.nextDateStr) + '</span>'
+        +       '<span class="card-meta-dot">•</span>'
+        +       '<span class="card-sub-tag">' + relLabel + '</span>'
+        +       '<span class="card-sub-tag">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
         +     '</div>'
         +   '</div>'
-        +   '<div class="bday-exact-age">'
-        +     '<span>📅 ' + fmtDate(m.nextDateStr) + '</span>'
-        +     '<span style="opacity:0.4">•</span>'
-        +     '<span>Age: <strong>' + m.currentAgeYears + ' yrs</strong> (' + m.currentAgeMonths + 'm ' + m.currentAgeDays + 'd)</span>'
+        +   '<div class="card-right-group">'
+        +     '<div class="days-badge-compact ' + todayBadgeClass + '" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badgeTextStr + '</div>'
+        +     '<span class="card-chevron">›</span>'
         +   '</div>'
-        +   giftBadge
-        + '</div>'
-        + '<div class="card-actions">'
-        +   '<a class="btn-whatsapp-wish" href="' + waLink + '" target="_blank" onclick="event.stopPropagation()">📲 Wish</a>'
-        +   '<button class="btn-share" onclick="doShareEvent(\'' + evt.id + '\',event)">↗️ Share</button>'
-        +   '<button class="btn-edit" onclick="doEdit(\'' + evt.id + '\',event)">✏️ Edit</button>'
-        +   '<button class="btn-del"  onclick="doDelPrompt(\'' + evt.id + '\',event)">🗑️ Delete</button>'
-        + '</div>'
         + '</div>'
         + '</div>';
 }
@@ -3144,13 +3248,10 @@ function cardHtml(evt, archived) {
     const uc  = archived ? 'u-far archived' : urgencyClass(d);
     const pls = (!archived && d >= 0 && d <= 3) ? 'pulsing' : '';
     const cat = CATS[evt.category] || CATS.general;
-    const pg  = progress(evt.date);
-    const pgLabel = archived ? '100% elapsed' : pg + '% to event';
-    const badge = archived ? Math.abs(d)+'d ago' : badgeText(evt);
+    const badge = archived ? Math.abs(d) + 'd ago' : badgeText(evt);
+    const todayBadgeClass = (!archived && d === 0) ? 'badge-today' : '';
     const celebrateAttr = (!archived && d === 0) ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
-    const notes = evt.notes
-        ? '<div class="card-notes">📝 ' + esc(evt.notes) + '</div>'
-        : '';
+    const notesSnippet = evt.notes ? '<span class="card-meta-dot">•</span><span class="card-notes-sub">📝 ' + esc(evt.notes) + '</span>' : '';
 
     return '<div class="card-wrapper" data-id="' + evt.id + '">'
         + '<div class="card-swipe-bg">'
@@ -3160,24 +3261,21 @@ function cardHtml(evt, archived) {
         +   '</div>'
         + '</div>'
         + '<div class="card ' + uc + ' ' + pls + '" data-id="' + evt.id + '" onclick="openDetailModal(\'' + evt.id + '\',event)">'
-        + '<div class="card-inner">'
-        +   '<div class="card-top">'
-        +     '<div class="cat-tag"><span class="cat-icon">' + cat.icon + '</span><span>' + cat.label + '</span></div>'
-        +     '<div class="days-badge" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badge + '</div>'
+        +   '<div class="card-bubble">' + cat.icon + '</div>'
+        +   '<div class="card-content-stack">'
+        +     '<div class="card-title-row">'
+        +       '<span class="card-name-txt">' + esc(evt.name) + '</span>'
+        +       '<span class="card-cat-pill">' + cat.label + '</span>'
+        +     '</div>'
+        +     '<div class="card-sub-row">'
+        +       '<span class="card-date-sub">📅 ' + fmtDate(evt.date) + '</span>'
+        +       notesSnippet
+        +     '</div>'
         +   '</div>'
-        +   '<div class="card-name">' + esc(evt.name) + '</div>'
-        +   '<div class="card-date">📅 ' + fmtDate(evt.date) + '</div>'
-        +   notes
-        +   '<div class="prog-wrap">'
-        +     '<div class="prog-meta"><span>Progress</span><span>' + pgLabel + '</span></div>'
-        +     '<div class="prog-track"><div class="prog-fill" style="width:' + pg + '%"></div></div>'
+        +   '<div class="card-right-group">'
+        +     '<div class="days-badge-compact ' + todayBadgeClass + '" id="badge-' + evt.id + '"' + celebrateAttr + '>' + badge + '</div>'
+        +     '<span class="card-chevron">›</span>'
         +   '</div>'
-        + '</div>'
-        + '<div class="card-actions">'
-        +   '<button class="btn-share" onclick="doShareEvent(\'' + evt.id + '\',event)">↗️ Share</button>'
-        +   '<button class="btn-edit" onclick="doEdit(\'' + evt.id + '\',event)">✏️ Edit</button>'
-        +   '<button class="btn-del"  onclick="doDelPrompt(\'' + evt.id + '\',event)">🗑️ Delete</button>'
-        + '</div>'
         + '</div>'
         + '</div>';
 }
@@ -3739,7 +3837,7 @@ function closeModal() {
 }
 
 function doEdit(id, e) {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     document.querySelectorAll('.card.open').forEach(function(c) { c.classList.remove('open'); });
     openModal(id);
 }
@@ -3785,7 +3883,7 @@ document.getElementById('ev-form').addEventListener('submit', function(e) {
    DELETE MODAL PROMPT
 ===================================================== */
 function doDelPrompt(id, e) {
-    e.stopPropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
     const ev = events.find(function(ev) { return ev.id === id; });
     if (!ev) return;
     pendingDelId = id;
@@ -4197,7 +4295,7 @@ render();
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.3.0";
+const CURRENT_APP_VERSION = "1.4.0";
 
 // Display current version in footer on load
 const versionBadge = document.getElementById('app-version-display');

@@ -1,6 +1,6 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "name": "Events Countdown",
   "updated": "2026-10-24",
-  "changelog": "v1.3.0: Added dedicated Perpetual Birthday Tracker & Age Countdown Engine. Enter birth date once to track exact completed age (years, months, days, total days lived), turning milestone age, and days remaining. Features perpetual annual rollover with zero archival, sorting by nearest upcoming birthday, landmark milestone badges, Western Zodiac calculation, 1-tap WhatsApp birthday wishes, and top segment switcher."
+  "changelog": "v1.4.0: Redesigned event and birthday cards into high-density compact rows (modeled on Namaz Prayer Times architecture) with left icon/avatar bubble, middle 2-line title & milestone stack, right tabular countdown badge with today celebration pulse, and seamless 1-tap Quick-View Bottom Sheet for full details, age stats, and actions."
 }
