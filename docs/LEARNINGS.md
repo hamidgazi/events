@@ -124,3 +124,23 @@ This document records architectural decisions, critical mobile quirks, operating
 
 
 
+
+
+---
+
+### 8. Medium Card Architecture, Full Age Breakdown & Smart Horizon Countdown (v1.5.0)
+* **Problem**:
+  Micro-compact rows ($\approx 56\text{px}$) maximized scannability but lacked sufficient breathing room to display complete life telemetry (years, months, and days lived). Furthermore, raw day counts for events far in the future (e.g., `224d`) place high cognitive load on users trying to mentally convert large numbers into calendar horizons.
+* **Medium Card Ergonomic Standard ($\approx 88\text{px}$)**:
+  - Container: `min-height: 84px`, padding `12px 14px`, flex gap `12px`, virtualized `contain-intrinsic-size: 0 88px`.
+  - Bubble Avatar: $44\text{px} \times 44\text{px}$ circular badge with 2-letter uppercase initials.
+  - Three-tier structured content stack:
+    1. *Tier 1 (Header)*: Full name (`font-size: 15px; font-weight: 700;`) + Turning pill (`Turning 32`) + landmark jubilee pill.
+    2. *Tier 2 (Age Breakdown)*: Completed age badge: `Age: 31 yrs, 7 mos, 9 days` (`font-size: 12px; color: #4ade80;`).
+    3. *Tier 3 (Context & Subtitle)*: Next calendar date (`📅 Jun 5, 2027`) + Relationship (`Family`) + Zodiac sign (`♊ Gemini`).
+* **Smart Horizon Algorithm (`computeRemainingHorizon`)**:
+  - For horizons $> 30\text{ days}$ (more than 1 month away), displays calendar months and remaining days (`7M 12D`, `2M`, `11M 4D`).
+  - Iterates month-by-month from `fromDate` to `targetDate` using month increments and end-of-month day clamping (`setDate(0)` if days exceed target month length).
+  - For horizons $\le 30\text{ days}$, displays actionable urgent countdown (`14d left`, `Tomorrow!`, `🎉 TODAY!`).
+* **Outcome**:
+  Provides the optimal middle ground between dense scannability and rich chronological context with zero clutter and zero mental math.

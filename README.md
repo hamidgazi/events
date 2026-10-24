@@ -1,6 +1,6 @@
-# 📅 Events Countdown & Compact Birthday Tracker (v1.4.0)
+# 📅 Events Countdown & Birthday Tracker (v1.5.0)
 
-A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), High-Density Compact Prayer-Times Style Card Rows, Perpetual Birthday Tracker & Age Engine, Hero Countdown Spotlight, Miller's Law Horizon Chunking, ergonomic Bottom Thumb Dock, 1-tap WhatsApp greetings, 1-tap iCalendar (.ics) export, and offline-first client storage.
+A mobile-first, high-performance Events Countdown PWA and companion Native Android Application equipped with real-time Home Screen Widgets (4x2 and 2x2), Medium Ergonomic Card Rows (88px) with Complete Age Breakdown (`Age: 31 yrs, 7 mos, 9 days`), Smart Horizon Countdown (`7M 12D` for >1 month, exact days for ≤30 days), Perpetual Birthday Tracker & Age Engine, Hero Countdown Spotlight, Miller's Law Horizon Chunking, ergonomic Bottom Thumb Dock, 1-tap WhatsApp greetings, 1-tap iCalendar (.ics) export, and offline-first client storage.
 
 - **GitHub Repository**: [https://github.com/hamidgazi/events](https://github.com/hamidgazi/events)
 - **Live PWA App**: [https://hamidgazi.github.io/events/](https://hamidgazi.github.io/events/)
@@ -14,10 +14,10 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 | :--- | :--- | :--- | :--- |
 | **Android APK** | Native Package | [EventsCountdown.apk](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/EventsCountdown.apk) | Compiled release package with 4x2 & 2x2 home screen widgets |
 | **Production PWA** | Web Application | [index.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/index.html) | Standalone, zero-dependency offline web app (GitHub Pages root) |
-| **Source App** | Source Code | [events.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/events.html) | Canonical source HTML app with compact card architecture |
+| **Source App** | Source Code | [events.html](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/events.html) | Canonical source HTML app with medium card & smart horizon architecture |
 | **1-Click Launcher** | Batch Script | [OPEN_APP.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/OPEN_APP.bat) | Instant desktop launcher to open application in default browser |
 | **1-Click Sync** | Batch Script | [push_to_github.bat](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/push_to_github.bat) | Git commit, build verify, and GitHub push deployment script |
-| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 26-point automated verification and DOM simulation suite |
+| **Test Suite** | Node.js Suite | [test_events.js](file:///C:/Users/Shop%20PC%202/OneDrive/Desktop/Antigravity%20Files/01-Events-Countdown/tests/test_events.js) | 27-point automated verification and DOM simulation suite |
 
 ---
 
@@ -51,7 +51,7 @@ A mobile-first, high-performance Events Countdown PWA and companion Native Andro
 │   └── PROGRESS.md         # Detailed chronological development log
 │
 └── tests/                  # 🧪 Automated verification suite
-    └── test_events.js      # 26 automated tests covering compact cards, birthdays, age math, horizons, & counts
+    └── test_events.js      # 27 automated tests covering medium cards, smart horizon, birthdays, age math, horizons, & counts
 ```
 
 ---
@@ -84,10 +84,12 @@ node -e "const fs = require('fs'); const s = fs.readFileSync('events.html', 'utf
 
 | Check | Target | Status | Guarantee |
 | :--- | :--- | :--- | :--- |
-| **Card Density** | Compact Prayer-Times Row | ✅ Verified | ~56px 2-line rows, 6–8 items visible simultaneously |
+| **Card Sizing** | Medium Ergonomic Card (88px) | ✅ Verified | 88px 3-tier layout, 44px avatar, generous touch target |
+| **Age Breakdown** | Full Age on Card | ✅ Verified | Displays completed `Age: X yrs, Y mos, Z days` directly on card |
+| **Smart Horizon** | Dynamic Countdown Format | ✅ Verified | `7M 12D` for >1 mo, exact days for ≤30d, `🎉 TODAY!` on day of event |
 | **Birthday Engine** | `computeBirthdayMetrics()` | ✅ Verified | Accurate age calculation (yrs, mos, days, days lived) + perpetual rollover |
 | **Active-Only Counts** | `updateFilterCounts()` | ✅ Verified | Only active upcoming events (`daysLeft >= 0`) counted in badges |
 | **Widget Exclusions** | `EventsWidgetProvider` | ✅ Verified | Past events (`diffDays < 0`) excluded from Home Screen widgets |
-| **Automated Tests** | `node tests/test_events.js` | ✅ 26/26 Passed | Verified compact rows, birthdays, Hero spotlight, horizons, modal, swipe, audio |
+| **Automated Tests** | `node tests/test_events.js` | ✅ 27/27 Passed | Verified medium rows, smart horizons, birthdays, Hero spotlight, horizons, modal, swipe, audio |
 | **Script Compilation** | `node --check` | ✅ 0 Errors | Pure ES6 JavaScript cleanly parsed with zero runtime syntax errors |
 | **Sync Parity** | `events.html` vs `index.html` | ✅ 100% Identical | Bit-for-bit parity guaranteed across root and Android assets |

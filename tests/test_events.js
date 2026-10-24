@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.4.0">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.4.0">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.4.0">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.5.0">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.5.0">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.5.0">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -737,5 +737,60 @@ assert(eventMarkup.includes('card-chevron'), 'cardHtml must contain card-chevron
 assert(!eventMarkup.includes('class="card-actions"'), 'cardHtml must NOT contain bulky inline action buttons');
 console.log('  [PASS] Compact prayer-times layout, high density, and clean action delegation verified.');
 
-console.log('\n=== ALL 26 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
+// 27. Test Medium Card Layout, Exact Age Breakdown & Smart Horizon Countdown (v1.5.0)
+console.log('\nTest 27: Medium Card Layout, Exact Age Breakdown & Smart Horizon Countdown (v1.5.0)...');
+
+assert(typeof sandbox.computeRemainingHorizon === 'function', 'computeRemainingHorizon must be defined');
+
+const baseTestDate = new Date(2026, 9, 24); // 2026-10-24
+
+// Case 1: > 1 month away (2027-06-05 from 2026-10-24 -> 7M 12D)
+const hFar = sandbox.computeRemainingHorizon('2027-06-05', baseTestDate);
+assert.strictEqual(hFar.months, 7, `Expected 7 months, got ${hFar.months}`);
+assert.strictEqual(hFar.days, 12, `Expected 12 days, got ${hFar.days}`);
+assert.strictEqual(hFar.text, '7M 12D', `Expected text '7M 12D', got ${hFar.text}`);
+
+// Case 2: exact months away (2026-12-24 from 2026-10-24 -> 2M)
+const hExactMonth = sandbox.computeRemainingHorizon('2026-12-24', baseTestDate);
+assert.strictEqual(hExactMonth.months, 2, `Expected 2 months, got ${hExactMonth.months}`);
+assert.strictEqual(hExactMonth.days, 0, `Expected 0 days, got ${hExactMonth.days}`);
+assert.strictEqual(hExactMonth.text, '2M', `Expected text '2M', got ${hExactMonth.text}`);
+
+// Case 3: <= 30 days away (2026-11-05 from 2026-10-24 -> 12d left)
+const hNear = sandbox.computeRemainingHorizon('2026-11-05', baseTestDate);
+assert.strictEqual(hNear.diffDays, 12, `Expected 12 days difference, got ${hNear.diffDays}`);
+assert.strictEqual(hNear.text, '12d left', `Expected text '12d left', got ${hNear.text}`);
+
+// Case 4: 1 day away (Tomorrow!)
+const hTmrw = sandbox.computeRemainingHorizon('2026-10-25', baseTestDate);
+assert.strictEqual(hTmrw.text, 'Tomorrow!', `Expected text 'Tomorrow!', got ${hTmrw.text}`);
+
+// Case 5: 0 days away (🎉 TODAY!)
+const hToday = sandbox.computeRemainingHorizon('2026-10-24', baseTestDate);
+assert.strictEqual(hToday.text, '🎉 TODAY!', `Expected text '🎉 TODAY!', got ${hToday.text}`);
+
+// Test card markup contains medium card styling & age breakdown
+const sampleBdayMed = {
+    id: 'b-med-1',
+    name: 'Farhan Zaidi',
+    birthDate: '1995-03-15',
+    category: 'birthday',
+    relationship: 'family'
+};
+const medBdayHtml = sandbox.bdayCardHtml(sampleBdayMed);
+assert(medBdayHtml.includes('class="card-age-row"'), 'bdayCardHtml must contain card-age-row');
+assert(medBdayHtml.includes('class="card-age-tag"'), 'bdayCardHtml must contain card-age-tag');
+assert(medBdayHtml.includes('class="card-age-val"'), 'bdayCardHtml must contain card-age-val');
+assert(medBdayHtml.includes('yrs,'), 'bdayCardHtml must display completed years');
+assert(medBdayHtml.includes('mos,'), 'bdayCardHtml must display completed months');
+assert(medBdayHtml.includes('days'), 'bdayCardHtml must display completed days');
+
+// Verify CSS contain-intrinsic-size and min-height in htmlContent for medium sizing
+assert(htmlContent.includes('contain-intrinsic-size: 0 88px;'), 'Missing medium contain-intrinsic-size 88px');
+assert(htmlContent.includes('min-height: 84px;'), 'Missing card min-height 84px');
+assert(htmlContent.includes('CURRENT_APP_VERSION = "1.5.0"'), 'Version must be 1.5.0 in script');
+
+console.log('  [PASS] Medium card layout, exact age breakdown, and smart horizon countdown verified.');
+
+console.log('\n=== ALL 27 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
 process.exit(0);

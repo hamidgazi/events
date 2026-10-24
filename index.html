@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#0d1117">
     <title>Events Countdown</title>
     <!-- Mobile Home Screen Icons & Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.4.0">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.4.0">
-    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.4.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.4.0">
-    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.4.0">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.4.0">
-    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.4.0">
-    <link rel="manifest" href="manifest.json?v=1.4.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.5.0">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.5.0">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.5.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.5.0">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.5.0">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.5.0">
+    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.5.0">
+    <link rel="manifest" href="manifest.json?v=1.5.0">
     <style>
         /* ============================================
            CSS VARIABLES (Deep OLED Glassmorphic)
@@ -651,13 +651,13 @@
         ============================================ */
         .card-wrapper {
             position: relative;
-            border-radius: var(--radius-sm);
-            margin-bottom: 7px;
+            border-radius: var(--radius);
+            margin-bottom: 9px;
             overflow: hidden;
             touch-action: pan-y;
             animation: card-in .25s ease both;
             content-visibility: auto;
-            contain-intrinsic-size: 0 58px;
+            contain-intrinsic-size: 0 88px;
         }
 
         .card-swipe-bg {
@@ -668,7 +668,7 @@
             align-items: center;
             justify-content: flex-end;
             padding-right: 22px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
             z-index: 1;
             pointer-events: none;
         }
@@ -681,21 +681,21 @@
             font-size: 13px;
             font-weight: 700;
             transform-origin: right center;
-            transform: scale(0.8);
+            transform: scale(0.85);
             opacity: 0.85;
             transition: transform 0.08s ease, opacity 0.15s ease;
             user-select: none;
         }
 
         .swipe-trash-icon {
-            font-size: 20px;
+            font-size: 22px;
             line-height: 1;
             display: inline-block;
             transition: transform 0.15s ease;
         }
 
         .swipe-trash-text {
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.3px;
             opacity: 0;
@@ -713,7 +713,7 @@
             transform: scale(1.3) rotate(-12deg);
         }
 
-        /* COMPACT CARD ROW (High-Density Prayer-Times style) */
+        /* MEDIUM CARD ROW */
         .card {
             --accent: var(--c-far);
             --accent-rgb: 110,118,129;
@@ -721,12 +721,12 @@
             z-index: 2;
             background: #161b22;
             border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
             margin-bottom: 0;
             cursor: pointer;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.22);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.28);
             transition: border-color .18s, transform .15s, background .18s;
             touch-action: pan-y;
             user-select: none;
@@ -734,13 +734,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 12px;
-            min-height: 56px;
-            gap: 10px;
+            padding: 12px 14px;
+            min-height: 84px;
+            gap: 12px;
         }
         .card:not(.swiping):active { transform: scale(0.985); }
         .card:hover {
-            border-color: rgba(255,255,255,0.22);
+            border-color: rgba(255,255,255,0.24);
             background: #1c2128;
         }
 
@@ -749,9 +749,9 @@
             content: '';
             position: absolute;
             left: 0; top: 0; bottom: 0;
-            width: 3.5px;
+            width: 4px;
             background: var(--accent);
-            border-radius: 3px 0 0 3px;
+            border-radius: 4px 0 0 4px;
         }
 
         /* Urgency classes */
@@ -767,27 +767,28 @@
             animation: pulse-ring 2.8s ease-in-out .6s infinite;
         }
 
-        /* Compact Card Interior Elements */
+        /* Medium Card Interior Elements */
         .card-bubble {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 800;
             flex-shrink: 0;
-            background: rgba(var(--accent-rgb), 0.15);
-            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            background: rgba(var(--accent-rgb), 0.16);
+            border: 1px solid rgba(var(--accent-rgb), 0.32);
             color: var(--accent);
             letter-spacing: -0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .card-bubble.bday-bubble {
-            background: linear-gradient(135deg, rgba(255,159,10,0.22), rgba(255,69,58,0.22));
-            border: 1px solid rgba(255,159,10,0.45);
+            background: linear-gradient(135deg, rgba(255,159,10,0.28), rgba(255,69,58,0.28));
+            border: 1px solid rgba(255,159,10,0.5);
             color: #ffd60a;
-            font-size: 13.5px;
+            font-size: 14.5px;
         }
 
         .card-content-stack {
@@ -796,21 +797,21 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 2.5px;
+            gap: 4px;
         }
 
         .card-title-row {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             min-width: 0;
         }
 
         .card-name-txt {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-1);
-            letter-spacing: -0.2px;
+            letter-spacing: -0.25px;
             line-height: 1.25;
             white-space: nowrap;
             overflow: hidden;
@@ -818,21 +819,21 @@
         }
 
         .card-turning-pill {
-            font-size: 10.5px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 1px 6px;
+            padding: 2px 7px;
             border-radius: 10px;
             background: rgba(255, 214, 10, 0.15);
-            border: 1px solid rgba(255, 214, 10, 0.35);
+            border: 1px solid rgba(255, 214, 10, 0.38);
             color: #ffd60a;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         .card-cat-pill {
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 600;
-            padding: 1px 6px;
+            padding: 2px 7px;
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
@@ -841,10 +842,30 @@
             flex-shrink: 0;
         }
 
-        .card-sub-row {
+        .card-age-row {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #f1f5f9;
             display: flex;
             align-items: center;
             gap: 5px;
+            line-height: 1.3;
+            letter-spacing: -0.1px;
+        }
+        .card-age-tag {
+            color: var(--text-3);
+            font-weight: 500;
+            font-size: 11.5px;
+        }
+        .card-age-val {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .card-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 11.5px;
             color: var(--text-2);
             white-space: nowrap;
@@ -865,12 +886,12 @@
         }
 
         .card-sub-tag {
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 600;
-            padding: 0 5px;
+            padding: 1px 6px;
             border-radius: 6px;
             background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.09);
             color: var(--text-3);
             flex-shrink: 0;
         }
@@ -885,19 +906,19 @@
         .card-right-group {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             flex-shrink: 0;
         }
 
         .days-badge-compact, .days-badge {
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 800;
             letter-spacing: .2px;
-            padding: 4px 9px;
-            border-radius: 12px;
+            padding: 5px 11px;
+            border-radius: 14px;
             color: var(--accent);
             background: rgba(var(--accent-rgb), .14);
-            border: 1px solid rgba(var(--accent-rgb), .28);
+            border: 1px solid rgba(var(--accent-rgb), .30);
             white-space: nowrap;
             font-variant-numeric: tabular-nums;
         }
@@ -916,7 +937,7 @@
 
         .card-chevron {
             color: var(--text-3);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             opacity: 0.45;
             transition: transform .15s ease, opacity .15s ease;
@@ -1745,7 +1766,7 @@
 <div id="updateBanner" style="display:none; align-items:center; justify-content:space-between; background:linear-gradient(90deg, #1f6feb, #238636); color:#fff; padding:10px 16px; font-size:13px; font-weight:600; position:sticky; top:0; z-index:999; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
     <div style="display:flex; align-items:center; gap:8px;">
         <span>✨</span>
-        <span>New update available! (<span id="txtNewVersion">v1.4.0</span>)</span>
+        <span>New update available! (<span id="txtNewVersion">v1.5.0</span>)</span>
     </div>
     <button id="btnReloadUpdate" style="background:#fff; color:#0d1117; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">Update Now</button>
 </div>
@@ -1824,7 +1845,7 @@
 <!-- ===== FOOTER (VERSION & UPDATE STATUS) ===== -->
 <footer class="app-footer">
     <div class="footer-version-row">
-        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.4.0</span></span>
+        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.5.0</span></span>
         <button type="button" id="btn-manual-update-check" class="btn-check-update">🔄 Check for Updates</button>
     </div>
     <div class="footer-status-text" id="footer-status-text">App is up to date • 100% Offline PWA</div>
@@ -2036,7 +2057,7 @@
         </div>
         <input type="file" id="file-import" accept=".json,application/json" style="display:none">
         <div class="more-footer-info">
-            <span>📅 Events Countdown <span class="footer-version-badge">v1.4.0</span></span>
+            <span>📅 Events Countdown <span class="footer-version-badge">v1.5.0</span></span>
             <span style="opacity:0.6;">• 100% Offline PWA</span>
         </div>
         <button type="button" class="del-cancel" id="more-close" style="width:100%;margin-top:12px">Close</button>
@@ -2083,7 +2104,7 @@
         <div style="font-size:40px; margin-bottom:6px;">🚀</div>
         <h3 style="font-size:18px; margin-bottom:4px; color:#fff;">New Update Available!</h3>
         <p style="font-size:13.5px; color:var(--text-2); margin-bottom:14px;">
-            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.4.0</b> is ready for you.
+            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.5.0</b> is ready for you.
         </p>
         <div id="popup-changelog-box" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:12px; color:var(--text-1); text-align:left; margin-bottom:18px; line-height:1.45;">
             <b style="color:var(--text-3); font-size:11px; text-transform:uppercase;">What's New:</b><br>
@@ -2501,6 +2522,46 @@ function parseDateParts(dateStr) {
     return { y: y, m: m, d: d };
 }
 
+function computeRemainingHorizon(targetDate, fromDate) {
+    const from = fromDate || new Date();
+    const tStart = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    let tEnd = null;
+    if (typeof targetDate === 'string') {
+        const p = parseDateParts(targetDate);
+        tEnd = p ? new Date(p.y, p.m - 1, p.d) : parseLocalDate(targetDate);
+    } else if (targetDate instanceof Date) {
+        tEnd = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    }
+    if (!tEnd || isNaN(tEnd.getTime())) return { diffDays: 0, months: 0, days: 0, text: '0d left' };
+
+    const diffMs = tEnd - tStart;
+    const diffDays = Math.round(diffMs / 864e5);
+    if (diffDays <= 0) return { diffDays: 0, months: 0, days: 0, text: '🎉 TODAY!' };
+    if (diffDays === 1) return { diffDays: 1, months: 0, days: 1, text: 'Tomorrow!' };
+    if (diffDays <= 30) return { diffDays: diffDays, months: 0, days: diffDays, text: diffDays + 'd left' };
+
+    let months = 0;
+    let cursor = new Date(tStart.getFullYear(), tStart.getMonth(), tStart.getDate());
+
+    while (true) {
+        const nextMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
+        if (nextMonth.getDate() !== cursor.getDate()) {
+            nextMonth.setDate(0);
+        }
+        if (nextMonth <= tEnd) {
+            cursor = nextMonth;
+            months++;
+        } else {
+            break;
+        }
+    }
+
+    const remainingMs = tEnd - cursor;
+    const remainingDays = Math.round(remainingMs / 864e5);
+    const text = remainingDays > 0 ? (months + 'M ' + remainingDays + 'D') : (months + 'M');
+    return { diffDays: diffDays, months: months, days: remainingDays, text: text };
+}
+
 function computeBirthdayMetrics(birthDateStr) {
     const p = parseDateParts(birthDateStr);
     if (!p) {
@@ -2508,7 +2569,8 @@ function computeBirthdayMetrics(birthDateStr) {
             currentAgeYears: 0, currentAgeMonths: 0, currentAgeDays: 0,
             totalDaysLived: 0, nextDateStr: birthDateStr || '',
             daysLeft: 0, isToday: false, turningAge: 0,
-            zodiacGlyph: '✨', zodiacName: 'Birthday', milestoneLabel: ''
+            zodiacGlyph: '✨', zodiacName: 'Birthday', milestoneLabel: '',
+            horizon: { diffDays: 0, months: 0, days: 0, text: '0d left' }
         };
     }
 
@@ -2571,6 +2633,9 @@ function computeBirthdayMetrics(birthDateStr) {
     // Landmark milestone
     const milestoneLabel = getMilestoneLabel(turningAge);
 
+    // Smart Horizon (Months + Days for >30d)
+    const horizon = computeRemainingHorizon(nextBdayMidnight, todayMidnight);
+
     return {
         currentAgeYears: curYears,
         currentAgeMonths: curMonths,
@@ -2582,7 +2647,8 @@ function computeBirthdayMetrics(birthDateStr) {
         turningAge: turningAge,
         zodiacGlyph: zodiac.glyph,
         zodiacName: zodiac.name,
-        milestoneLabel: milestoneLabel
+        milestoneLabel: milestoneLabel,
+        horizon: horizon
     };
 }
 
@@ -2710,7 +2776,8 @@ function bdayCardHtml(evt) {
     const isToday = m.isToday;
     const uc = isToday ? 'u-today' : urgencyClass(d);
     const pls = isToday || d <= 3 ? 'pulsing' : '';
-    const badgeTextStr = isToday ? '🎉 TODAY!' : (d === 1 ? 'Tomorrow!' : d + 'd left');
+    const horizon = m.horizon || computeRemainingHorizon(m.nextDateStr);
+    const badgeTextStr = isToday ? '🎉 TODAY!' : horizon.text;
     const todayBadgeClass = isToday ? 'badge-today' : '';
     const celebrateAttr = isToday ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
     const rel = evt.relationship || 'family';
@@ -2734,6 +2801,10 @@ function bdayCardHtml(evt) {
         +       '<span class="card-name-txt">' + esc(evt.name) + '</span>'
         +       '<span class="card-turning-pill">Turning ' + m.turningAge + '</span>'
         +       milestonePill
+        +     '</div>'
+        +     '<div class="card-age-row">'
+        +       '<span class="card-age-tag">Age:</span>'
+        +       '<span class="card-age-val">' + m.currentAgeYears + ' yrs, ' + m.currentAgeMonths + ' mos, ' + m.currentAgeDays + ' days</span>'
         +     '</div>'
         +     '<div class="card-sub-row">'
         +       '<span class="card-date-sub">📅 ' + fmtDate(m.nextDateStr) + '</span>'
@@ -3248,10 +3319,11 @@ function cardHtml(evt, archived) {
     const uc  = archived ? 'u-far archived' : urgencyClass(d);
     const pls = (!archived && d >= 0 && d <= 3) ? 'pulsing' : '';
     const cat = CATS[evt.category] || CATS.general;
-    const badge = archived ? Math.abs(d) + 'd ago' : badgeText(evt);
+    const horizon = (!archived && d > 30) ? computeRemainingHorizon(evt.date) : null;
+    const badge = archived ? Math.abs(d) + 'd ago' : (horizon ? horizon.text : badgeText(evt));
     const todayBadgeClass = (!archived && d === 0) ? 'badge-today' : '';
     const celebrateAttr = (!archived && d === 0) ? ' onclick="celebrateToday(event)" title="🎉 Celebrate Today!" style="cursor:pointer;"' : '';
-    const notesSnippet = evt.notes ? '<span class="card-meta-dot">•</span><span class="card-notes-sub">📝 ' + esc(evt.notes) + '</span>' : '';
+    const notesSnippet = evt.notes ? '<span class="card-notes-sub">📝 ' + esc(evt.notes) + '</span>' : '';
 
     return '<div class="card-wrapper" data-id="' + evt.id + '">'
         + '<div class="card-swipe-bg">'
@@ -3267,9 +3339,12 @@ function cardHtml(evt, archived) {
         +       '<span class="card-name-txt">' + esc(evt.name) + '</span>'
         +       '<span class="card-cat-pill">' + cat.label + '</span>'
         +     '</div>'
-        +     '<div class="card-sub-row">'
+        +     '<div class="card-age-row">'
         +       '<span class="card-date-sub">📅 ' + fmtDate(evt.date) + '</span>'
-        +       notesSnippet
+        +       (notesSnippet ? '<span class="card-meta-dot">•</span>' + notesSnippet : '')
+        +     '</div>'
+        +     '<div class="card-sub-row">'
+        +       '<span class="card-sub-tag">' + (archived ? 'Past Event' : (d <= 7 ? 'Upcoming' : 'Scheduled')) + '</span>'
         +     '</div>'
         +   '</div>'
         +   '<div class="card-right-group">'
@@ -4295,7 +4370,7 @@ render();
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.4.0";
+const CURRENT_APP_VERSION = "1.5.0";
 
 // Display current version in footer on load
 const versionBadge = document.getElementById('app-version-display');

@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "name": "Events Countdown",
   "updated": "2026-10-24",
-  "changelog": "v1.4.0: Redesigned event and birthday cards into high-density compact rows (modeled on Namaz Prayer Times architecture) with left icon/avatar bubble, middle 2-line title & milestone stack, right tabular countdown badge with today celebration pulse, and seamless 1-tap Quick-View Bottom Sheet for full details, age stats, and actions."
+  "changelog": "v1.5.0: Upgraded card sizing to executive medium (~88px) with 44px avatar bubbles. Added exact completed age breakdown (years, months, days) directly on every birthday card. Introduced Smart Horizon Countdown Engine: shows relative calendar horizon (e.g. '7M 12D') for birthdays/events > 1 month away, and exact days countdown ('14d left', 'Tomorrow!', 'TODAY!') within 30 days."
 }
