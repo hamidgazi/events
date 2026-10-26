@@ -160,3 +160,23 @@ This document records architectural decisions, critical mobile quirks, operating
   - *Eldest First Mode*: Sorts by `new Date(birthDate)` ascending. Hides the urgency spotlight and renders all 13 family members in clean chronological hierarchy from Siraj (age 60) down to Yusuf (age 3).
 * **Family Pulse Summary Bar**:
   - Provides an executive top-level status chip (`👨‍👩‍👧 13 Family Members • 🎂 Next: Hamza in 7d (Turning 4)`), giving immediate peripheral situational awareness without cluttering individual cards.
+
+
+---
+
+### 10. Clean Date-Focused Typography & Universal Dynamic Versioning (v1.6.1)
+* **The Clutter Anti-Pattern (Redundant Tags & Astrological Star Information)**:
+  - Displaying redundant metadata tags (e.g., "Family", "Friend", "VIP") when a user is tracking personal contacts introduces unnecessary visual friction.
+  - Displaying astrological zodiac/star glyphs (e.g., ♊ Gemini, ♏ Scorpio) can be culturally or personally objectionable and distracts from core life telemetry (age, milestone, target date).
+  - *The Fix*: Completely eliminate relationship pills and star/zodiac badges from cards, hero spotlight, and detail sheets. Line 3 of each card is dedicated purely to the target date (`📅 Jun 5, 2027`), resulting in a tranquil, pristine, and focused visual presentation.
+* **Universal Dynamic Versioning Architecture**:
+  - *The Defect*: Hardcoding version text strings (e.g. `<span class="footer-version-badge">v1.5.0</span>`) inside deep modular bottom sheets (e.g., the More menu) causes visual drift when the main app footer is dynamically updated via JavaScript.
+  - *The Fix*:
+    1. Assign explicit DOM identifiers (`#more-version-display`, `#app-version-display`).
+    2. Execute a universal class query on startup:
+       ```javascript
+       document.querySelectorAll('.footer-version-badge').forEach(b => {
+           b.textContent = 'v' + CURRENT_APP_VERSION;
+       });
+       ```
+    3. Guarantees 100% synchronized version telemetry across all screens, menus, and bottom sheets.

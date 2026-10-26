@@ -10,9 +10,9 @@ const htmlContent = fs.readFileSync(path.join(projectRoot, 'events.html'), 'utf8
 
 // 1. Check Favicon and App Icon
 console.log('Test 1: App Icons, Apple Touch Icon & Manifest...');
-assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.0">'), 'Missing PNG 192 icon link');
-assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.0">'), 'Missing apple-touch-icon link');
-assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.6.0">'), 'Missing versioned manifest link');
+assert(htmlContent.includes('<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.1">'), 'Missing PNG 192 icon link');
+assert(htmlContent.includes('<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.1">'), 'Missing apple-touch-icon link');
+assert(htmlContent.includes('<link rel="manifest" href="manifest.json?v=1.6.1">'), 'Missing versioned manifest link');
 
 // Verify actual icon files exist on disk and have exact square dimensions
 const checkDims = (file, expW, expH) => {
@@ -89,7 +89,8 @@ const requiredIds = [
     'family-pulse-next',
     'bday-sort-bar',
     'sort-btn-upcoming',
-    'sort-btn-age'
+    'sort-btn-age',
+    'more-version-display'
 ];
 
 requiredIds.forEach(id => {
@@ -794,7 +795,7 @@ assert(medBdayHtml.includes('days'), 'bdayCardHtml must display completed days')
 // Verify CSS contain-intrinsic-size and min-height in htmlContent for medium sizing
 assert(htmlContent.includes('contain-intrinsic-size: 0 88px;'), 'Missing medium contain-intrinsic-size 88px');
 assert(htmlContent.includes('min-height: 84px;'), 'Missing card min-height 84px');
-assert(htmlContent.includes('CURRENT_APP_VERSION = "1.6.0"'), 'Version must be 1.6.0 in script');
+assert(htmlContent.includes('CURRENT_APP_VERSION = "1.6.1"'), 'Version must be 1.6.1 in script');
 
 console.log('  [PASS] Medium card layout, exact age breakdown, and smart horizon countdown verified.');
 
@@ -867,12 +868,24 @@ assert(sirajIdx !== -1, 'Siraj must be present in Eldest First list');
 assert(yusufIdx !== -1, 'Yusuf must be present in Eldest First list');
 assert(sirajIdx < yusufIdx, `Siraj (born 1966, index ${sirajIdx}) must appear before Yusuf (born 2023, index ${yusufIdx}) in Eldest First mode`);
 
-// Test Pulse Bar elements
+// Test Pulse Bar elements & 13 Birthdays Tracked label
 assert(htmlContent.includes('id="family-pulse-bar"'), 'Missing family-pulse-bar in HTML');
 assert(htmlContent.includes('id="family-pulse-count"'), 'Missing family-pulse-count in HTML');
 assert(htmlContent.includes('id="family-pulse-next"'), 'Missing family-pulse-next in HTML');
+sandbox.render();
+assert(mockElements['family-pulse-count'].textContent.includes('13 Birthdays Tracked'), 'Pulse bar must say 13 Birthdays Tracked');
 
-console.log('  [PASS] Authentic family roster, deduplicating migration, dual sorting & pulse bar verified.');
+// Verify Complete Removal of Family tag/label and Stars (zodiac) info
+const sampleCardHtml = sandbox.bdayCardHtml(sandbox.events[0]);
+assert(!sampleCardHtml.includes('card-sub-tag'), 'bdayCardHtml must NOT contain card-sub-tag (no family or stars info)');
+assert(!sampleCardHtml.includes('Family'), 'bdayCardHtml must NOT contain Family label');
+assert(!sampleCardHtml.includes('Gemini') && !sampleCardHtml.includes('Scorpio') && !sampleCardHtml.includes('Leo'), 'bdayCardHtml must NOT contain zodiac stars information');
+
+// Verify More sheet version display
+assert(htmlContent.includes('id="more-version-display"'), 'Missing more-version-display in HTML');
+assert(htmlContent.includes('v1.6.1'), 'HTML must feature version 1.6.1');
+
+console.log('  [PASS] Authentic family roster, deduplicating migration, dual sorting, clean date cards (zero family/stars tags) & version sync verified.');
 
 console.log('\n=== ALL 28 VERIFICATION TESTS PASSED SUCCESSFULLY! ===\n');
 process.exit(0);

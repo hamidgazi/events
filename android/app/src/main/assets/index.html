@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#0d1117">
     <title>Events Countdown</title>
     <!-- Mobile Home Screen Icons & Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.0">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.6.0">
-    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.6.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.0">
-    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.6.0">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.6.0">
-    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.6.0">
-    <link rel="manifest" href="manifest.json?v=1.6.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-app-192.png?v=1.6.1">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-app-512.png?v=1.6.1">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=1.6.1">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=1.6.1">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-app-512.png?v=1.6.1">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.6.1">
+    <link rel="shortcut icon" href="icons/icon-app-192.png?v=1.6.1">
+    <link rel="manifest" href="manifest.json?v=1.6.1">
     <style>
         /* ============================================
            CSS VARIABLES (Deep OLED Glassmorphic)
@@ -1838,7 +1838,7 @@
 <div id="updateBanner" style="display:none; align-items:center; justify-content:space-between; background:linear-gradient(90deg, #1f6feb, #238636); color:#fff; padding:10px 16px; font-size:13px; font-weight:600; position:sticky; top:0; z-index:999; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
     <div style="display:flex; align-items:center; gap:8px;">
         <span>✨</span>
-        <span>New update available! (<span id="txtNewVersion">v1.5.0</span>)</span>
+        <span>New update available! (<span id="txtNewVersion">v1.6.1</span>)</span>
     </div>
     <button id="btnReloadUpdate" style="background:#fff; color:#0d1117; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">Update Now</button>
 </div>
@@ -1902,8 +1902,8 @@
     <!-- Family Pulse Bar & Sort Mode (Birthdays Mode) -->
     <div class="family-pulse-bar" id="family-pulse-bar" style="display:none">
         <div class="family-pulse-item">
-            <span class="family-pulse-icon">👨‍👩‍👧</span>
-            <span class="family-pulse-count" id="family-pulse-count">13 Family Members</span>
+            <span class="family-pulse-icon">🎂</span>
+            <span class="family-pulse-count" id="family-pulse-count">13 Birthdays Tracked</span>
         </div>
         <span class="family-pulse-sep">•</span>
         <div class="family-pulse-item">
@@ -1935,7 +1935,7 @@
 <!-- ===== FOOTER (VERSION & UPDATE STATUS) ===== -->
 <footer class="app-footer">
     <div class="footer-version-row">
-        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.5.0</span></span>
+        <span>📅 Events Countdown <span class="footer-version-badge" id="app-version-display">v1.6.1</span></span>
         <button type="button" id="btn-manual-update-check" class="btn-check-update">🔄 Check for Updates</button>
     </div>
     <div class="footer-status-text" id="footer-status-text">App is up to date • 100% Offline PWA</div>
@@ -2003,7 +2003,7 @@
             <div id="bday-age-preview" class="bday-preview-box"></div>
         </div>
 
-        <div class="fg" id="bday-rel-wrap" style="display:none;">
+        <div class="fg" id="bday-rel-wrap" style="display:none !important;">
             <label>Relationship Tag</label>
             <div class="category-chips-row" id="rel-chips-selector">
                 <button type="button" class="cat-chip active" data-rel="family" onclick="selectRelChip('family')">👨‍👩‍👧 Family</button>
@@ -2071,7 +2071,7 @@
         <div id="detail-bday-box" style="display:none; background:rgba(255,159,10,0.09); border:1px solid rgba(255,159,10,0.3); border-radius:12px; padding:10px 14px; margin:10px 0;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                 <span id="detail-turning-title" style="font-size:16px; font-weight:800; color:#ffd60a;">Turning 32</span>
-                <span id="detail-zodiac-badge" class="bday-zodiac-pill">♈ Aries</span>
+                <span id="detail-zodiac-badge" class="bday-zodiac-pill" style="display:none;"></span>
             </div>
             <div id="detail-exact-age-txt" style="font-size:12.5px; color:var(--text-1); margin-bottom:3px;">Currently 31 yrs, 7 mos, 9 days</div>
             <div id="detail-lived-txt" style="font-size:11px; color:var(--text-3);">11,546 days lived</div>
@@ -2147,7 +2147,7 @@
         </div>
         <input type="file" id="file-import" accept=".json,application/json" style="display:none">
         <div class="more-footer-info">
-            <span>📅 Events Countdown <span class="footer-version-badge">v1.5.0</span></span>
+            <span>📅 Events Countdown <span class="footer-version-badge" id="more-version-display">v1.6.1</span></span>
             <span style="opacity:0.6;">• 100% Offline PWA</span>
         </div>
         <button type="button" class="del-cancel" id="more-close" style="width:100%;margin-top:12px">Close</button>
@@ -2194,7 +2194,7 @@
         <div style="font-size:40px; margin-bottom:6px;">🚀</div>
         <h3 style="font-size:18px; margin-bottom:4px; color:#fff;">New Update Available!</h3>
         <p style="font-size:13.5px; color:var(--text-2); margin-bottom:14px;">
-            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.6.0</b> is ready for you.
+            A newer version <b id="popup-new-version" style="color:#3dd68c;">v1.6.1</b> is ready for you.
         </p>
         <div id="popup-changelog-box" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:12px; font-size:12px; color:var(--text-1); text-align:left; margin-bottom:18px; line-height:1.45;">
             <b style="color:var(--text-3); font-size:11px; text-transform:uppercase;">What's New:</b><br>
@@ -2244,19 +2244,19 @@ function relDate(daysFromNow) {
 }
 
 const FAMILY_ROSTER = [
-    { name: "Siraj",   birthDate: "1966-07-30", date: "1966-07-30", category: "birthday", relationship: "family", notes: "Family Elder • Diamond Jubilee" },
-    { name: "Rasida",  birthDate: "1971-12-22", date: "1971-12-22", category: "birthday", relationship: "family", notes: "Family Elder • 55th Milestone" },
-    { name: "Munira",  birthDate: "1993-11-07", date: "1993-11-07", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Ahamed",  birthDate: "1995-09-19", date: "1995-09-19", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Mahmood", birthDate: "1997-09-08", date: "1997-09-08", category: "birthday", relationship: "family", notes: "Family Member • 30th Milestone upcoming" },
-    { name: "Shemil",  birthDate: "2001-07-27", date: "2001-07-27", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Aamena",  birthDate: "2001-05-11", date: "2001-05-11", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Hamid",   birthDate: "2002-11-23", date: "2002-11-23", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Amina",   birthDate: "2003-09-17", date: "2003-09-17", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Saqlain", birthDate: "2013-07-29", date: "2013-07-29", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Anas",    birthDate: "2018-04-08", date: "2018-04-08", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Hamza",   birthDate: "2022-10-31", date: "2022-10-31", category: "birthday", relationship: "family", notes: "Family Member" },
-    { name: "Yusuf",   birthDate: "2023-07-05", date: "2023-07-05", category: "birthday", relationship: "family", notes: "Family Member" }
+    { name: "Siraj",   birthDate: "1966-07-30", date: "1966-07-30", category: "birthday", relationship: "family", notes: "Diamond Jubilee (60)" },
+    { name: "Rasida",  birthDate: "1971-12-22", date: "1971-12-22", category: "birthday", relationship: "family", notes: "55th Milestone" },
+    { name: "Munira",  birthDate: "1993-11-07", date: "1993-11-07", category: "birthday", relationship: "family", notes: "" },
+    { name: "Ahamed",  birthDate: "1995-09-19", date: "1995-09-19", category: "birthday", relationship: "family", notes: "" },
+    { name: "Mahmood", birthDate: "1997-09-08", date: "1997-09-08", category: "birthday", relationship: "family", notes: "30th Milestone upcoming" },
+    { name: "Shemil",  birthDate: "2001-07-27", date: "2001-07-27", category: "birthday", relationship: "family", notes: "" },
+    { name: "Aamena",  birthDate: "2001-05-11", date: "2001-05-11", category: "birthday", relationship: "family", notes: "" },
+    { name: "Hamid",   birthDate: "2002-11-23", date: "2002-11-23", category: "birthday", relationship: "family", notes: "" },
+    { name: "Amina",   birthDate: "2003-09-17", date: "2003-09-17", category: "birthday", relationship: "family", notes: "" },
+    { name: "Saqlain", birthDate: "2013-07-29", date: "2013-07-29", category: "birthday", relationship: "family", notes: "" },
+    { name: "Anas",    birthDate: "2018-04-08", date: "2018-04-08", category: "birthday", relationship: "family", notes: "" },
+    { name: "Hamza",   birthDate: "2022-10-31", date: "2022-10-31", category: "birthday", relationship: "family", notes: "" },
+    { name: "Yusuf",   birthDate: "2023-07-05", date: "2023-07-05", category: "birthday", relationship: "family", notes: "" }
 ];
 
 const SAMPLES = FAMILY_ROSTER;
@@ -2930,9 +2930,6 @@ function bdayCardHtml(evt) {
         +     '</div>'
         +     '<div class="card-sub-row">'
         +       '<span class="card-date-sub">📅 ' + fmtDate(m.nextDateStr) + '</span>'
-        +       '<span class="card-meta-dot">•</span>'
-        +       '<span class="card-sub-tag">' + relLabel + '</span>'
-        +       '<span class="card-sub-tag">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
         +     '</div>'
         +   '</div>'
         +   '<div class="card-right-group">'
@@ -2960,8 +2957,6 @@ function bdayHeroHtml(evt) {
         + '<div class="hero-top-badge">'
         +   '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
         +     '<div class="cat-tag"><span class="cat-icon">🎂</span><span>Birthday</span></div>'
-        +     '<span class="bday-rel-pill">' + relLabel + '</span>'
-        +     '<span class="bday-zodiac-pill">' + m.zodiacGlyph + ' ' + m.zodiacName + '</span>'
         +     milestone
         +   '</div>'
         +   '<span class="hero-spotlight-pill">🎂 NEXT BIRTHDAY</span>'
@@ -3128,7 +3123,7 @@ function openDetailModal(id, e) {
         countdownTargetDate = m.nextDateStr;
         const rel = evt.relationship || 'family';
         const relLabel = rel === 'family' ? '👨‍👩‍👧 Family' : rel === 'friend' ? '🤝 Friend' : rel === 'work' ? '💼 Work' : '⭐ VIP';
-        if (elCat) elCat.innerHTML = '🎂 Birthday • ' + relLabel;
+        if (elCat) elCat.innerHTML = '🎂 Birthday';
 
         if (elBadge) {
             elBadge.textContent = m.isToday ? '🎂 TODAY!' : (m.daysLeft === 1 ? 'Tomorrow!' : m.daysLeft + 'd left');
@@ -3146,7 +3141,7 @@ function openDetailModal(id, e) {
             const exactAge = document.getElementById('detail-exact-age-txt');
             const livedTxt = document.getElementById('detail-lived-txt');
             if (tTitle) tTitle.textContent = (m.isToday ? '🎂 Turning ' + m.turningAge + ' Today!' : 'Turning ' + m.turningAge);
-            if (zBadge) zBadge.textContent = m.zodiacGlyph + ' ' + m.zodiacName;
+            if (zBadge) zBadge.style.display = 'none';
             if (exactAge) exactAge.textContent = 'Currently ' + m.currentAgeYears + ' yrs, ' + m.currentAgeMonths + ' mos, ' + m.currentAgeDays + ' days';
             if (livedTxt) livedTxt.textContent = m.totalDaysLived.toLocaleString() + ' days lived on Earth' + (m.milestoneLabel ? ' • ' + m.milestoneLabel : '');
         }
@@ -3271,7 +3266,7 @@ function updateModalFieldsForCategory(cat) {
         if (lblName) lblName.innerHTML = 'Person\'s Name <span style="color:var(--c-today)">*</span>';
         if (lblDate) lblDate.innerHTML = 'Birth Date (Day, Month, Year) <span style="color:var(--c-today)">*</span>';
         if (decadeWrap) decadeWrap.style.display = 'block';
-        if (relWrap) relWrap.style.display = 'block';
+        if (relWrap) relWrap.style.display = 'none';
         if (giftsWrap) giftsWrap.style.display = 'block';
         if (quickPresets) quickPresets.style.display = 'none';
         if (quickLbl) quickLbl.style.display = 'none';
@@ -3407,6 +3402,14 @@ function migrateFamilyRoster() {
                     createdAt: Date.now() + idx
                 });
             }
+        });
+
+        // 3. Clean up any redundant "Family Member" notes from existing cards
+        events.forEach(function(e) {
+            if (e.notes === 'Family Member') e.notes = '';
+            if (e.notes === 'Family Elder • Diamond Jubilee') e.notes = 'Diamond Jubilee (60)';
+            if (e.notes === 'Family Elder • 55th Milestone') e.notes = '55th Milestone';
+            if (e.notes === 'Family Member • 30th Milestone upcoming') e.notes = '30th Milestone upcoming';
         });
 
         save();
@@ -3738,7 +3741,7 @@ function renderBirthdaysView(allBdays) {
             heroSpot.innerHTML = '';
         }
         if (bdays.length) {
-            aHdr.textContent = (searchQuery.trim() ? 'Matching Family — ' : 'Family by Age (Eldest to Youngest) — ') + bdays.length;
+            aHdr.textContent = (searchQuery.trim() ? 'Matching Birthdays — ' : 'Birthdays by Age (Eldest to Youngest) — ') + bdays.length;
             aList.innerHTML = bdays.map(bdayCardHtml).join('');
         } else {
             aHdr.textContent = '';
@@ -3944,13 +3947,13 @@ function render() {
 
     if (currentViewTab === 'birthdays') {
         if (catFilterBar) catFilterBar.style.display = 'none';
-        if (bdayFilterBar) bdayFilterBar.style.display = 'flex';
+        if (bdayFilterBar) bdayFilterBar.style.display = 'none';
         if (mainHeading) mainHeading.textContent = '🎉 Birthdays';
         if (pulseBar) {
             pulseBar.style.display = 'flex';
-            const famCount = allBdays.filter(e => (e.relationship || 'family') === 'family').length;
+            const bdayCount = allBdays.length;
             const pulseCountEl = document.getElementById('family-pulse-count');
-            if (pulseCountEl) pulseCountEl.textContent = famCount + ' Family Members';
+            if (pulseCountEl) pulseCountEl.textContent = bdayCount + ' Birthdays Tracked';
 
             const pulseNextEl = document.getElementById('family-pulse-next');
             if (pulseNextEl && allBdays.length > 0) {
@@ -4596,11 +4599,12 @@ render();
 /* =====================================================
    ONLINE AUTO-UPDATE SYSTEM (PWA & Service Worker)
 ===================================================== */
-const CURRENT_APP_VERSION = "1.6.0";
+const CURRENT_APP_VERSION = "1.6.1";
 
-// Display current version in footer on load
-const versionBadge = document.getElementById('app-version-display');
-if (versionBadge) versionBadge.textContent = 'v' + CURRENT_APP_VERSION;
+// Display current version across all badges on load
+document.querySelectorAll('.footer-version-badge').forEach(function(b) {
+    b.textContent = 'v' + CURRENT_APP_VERSION;
+});
 
 async function checkForAppUpdates(isManual = false) {
     const statusText = document.getElementById('footer-status-text');

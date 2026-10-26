@@ -1,6 +1,6 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "name": "Events Countdown",
-  "updated": "2026-10-24",
-  "changelog": "v1.6.0: Integrated authentic 13-member family birthday roster with ISO birth dates and smart deduplicating auto-migration (preserving manually entered Amina & Hamid while purging legacy placeholders). Added 'Eldest to Youngest' (Age Order) sort toggle alongside the standard 'Upcoming' sort. Added Family Pulse Summary bar showing family count and next upcoming birthday. Included canonical family_birthdays.json backup in repository."
+  "updated": "2026-10-26",
+  "changelog": "v1.6.1: Synchronized More sheet version display to match home screen. Completely removed family tags, relationship labels, and stars/zodiac information across cards, hero spotlight, detail sheet, and forms for a pristine, clean date-focused countdown."
 }
